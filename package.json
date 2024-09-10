@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "nodemon src/bin/www"
+    "start": "nodemon src/bin/www",
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",

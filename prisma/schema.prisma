@@ -64,7 +64,7 @@ model Cidade {
 model Estado {
   id_estado    Int        @id @default(autoincrement())
   nome_estado  String     @db.VarChar(100)
-  sigla_estado String     @db.VarChar(2)
+  sigla_estado String     @unique @db.VarChar(2)
   cidades      Cidade[]
   enderecos    Endereco[]
 

@@ -1,6 +1,9 @@
 import { Router } from 'express';
-i
+import registerRoutes from "./userRoutes.js";
+
 
 const router = Router();
+
+router.use('/', registerRoutes);
 
 export default router;

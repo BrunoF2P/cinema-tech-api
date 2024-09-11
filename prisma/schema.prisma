@@ -16,8 +16,8 @@ datasource db {
 model Usuario {
   id_usuario      Int         @id @default(autoincrement())
   nome            String      @db.VarChar(100)
-  cpf             String      @db.VarChar(11)
-  email           String      @db.VarChar(100)
+  cpf             String      @unique @db.VarChar(255)
+  email           String      @unique @db.VarChar(100)
   data_nascimento DateTime    @db.Date
   endereco        Endereco?   @relation(fields: [id_endereco], references: [id_endereco])
   senha           String      @db.VarChar(255)
@@ -34,7 +34,7 @@ model Usuario {
 
 model TipoUsuario {
   id_tipo_usuario Int       @id @default(autoincrement())
-  descricao       String    @db.VarChar(50)
+  descricao       String    @unique @db.VarChar(50)
   usuarios        Usuario[]
 
   @@map("tipo_usuarios")
@@ -63,7 +63,7 @@ model Cidade {
 
 model Estado {
   id_estado    Int        @id @default(autoincrement())
-  nome_estado  String     @db.VarChar(100)
+  nome_estado  String     @unique @db.VarChar(100)
   sigla_estado String     @unique @db.VarChar(2)
   cidades      Cidade[]
   enderecos    Endereco[]
@@ -92,7 +92,7 @@ model Filme {
 model Genero {
   id_genero   Int           @id @default(autoincrement())
   id_api      Int?          @db.Int
-  nome_genero String        @db.VarChar(100)
+  nome_genero String        @unique @db.VarChar(100)
   filmes      Filme[]       @relation("FilmeGeneros")
   FilmeGenero FilmeGenero[]
 
@@ -125,7 +125,7 @@ model Sala {
 
 model TipoSala {
   id_tipo_sala Int    @id @default(autoincrement())
-  descricao    String @db.VarChar(50)
+  descricao    String @unique @db.VarChar(50)
   salas        Sala[]
 
   @@map("tipos_salas")
@@ -193,7 +193,7 @@ model Ingresso {
 
 model TipoIngresso {
   id_tipo       Int             @id @default(autoincrement())
-  descricao     String          @db.VarChar(50)
+  descricao     String          @unique @db.VarChar(50)
   ingressos     Ingresso[]
   PrecoIngresso PrecoIngresso[]
 

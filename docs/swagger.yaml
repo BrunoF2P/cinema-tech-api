@@ -1,0 +1,429 @@
+openapi: 3.0.0
+info:
+  title: Cinema Tech API
+  description: Gerenciamento de cinema de ponta a ponta
+  version: 1.0.0
+
+servers:
+  - description: Teste local
+    url: http://localhost:3000/v1
+
+components:
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Film:
+          type: object
+          properties:
+            id_filme:
+              type: integer
+              description: ID do filme
+            titulo:
+              type: string
+              description: Título do filme
+            sinopse:
+              type: string
+              description: Sinopse do filme
+            data_lancamento:
+              type: string
+              format: date
+              description: Data de lançamento do filme
+            duracao:
+              type: integer
+              description: Duração do filme em minutos
+            classificacao_etaria:
+              type: string
+              description: Classificação etária do filme
+            poster_path:
+              type: string
+              description: URL da imagem de poster
+            backdrop_path:
+              type: string
+              description: URL da imagem de cartaz
+            nota_imdb:
+              type: number
+              format: float
+              description: Nota do IMDb do filme
+          required:
+            - titulo
+            - data_lancamento
+            - duracao
+            - classificacao_etaria
+            - poster_path
+            - backdrop_path
+            - nota_imdb
+
+paths:
+  /register:
+    post:
+      tags:
+        - Sessao do usuario
+      summary: Cadastro de Usuário
+      description: Endpoint para registrar um novo usuário. O tipo de usuário é determinado com base no código de referência enviado na solicitação.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  description: Nome completo do usuário
+                email:
+                  type: string
+                  format: email
+                  description: Email do usuário
+                senha:
+                  type: string
+                  description: Senha do usuário
+                re_senha:
+                  type: string
+                  description: Confirmação da senha
+                cpf:
+                  type: string
+                  description: CPF do usuário
+                data_nascimento:
+                  type: string
+                  format: date
+                  description: Data de nascimento do usuário no formato YYYY-MM-DD
+                codigo_ref:
+                  type: string
+                  description: Código de referência para determinar o tipo de usuário
+      responses:
+        '200':
+          description: Cadastro bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuário cadastrado com sucesso"
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Erro de validação ou de dados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        msg:
+                          type: string
+                        param:
+                          type: string
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  msg:
+                    type: string
+                    example: "Falha ao cadastrar o usuário"
+
+  /login:
+    post:
+      tags:
+        - Sessao do usuario
+      summary: Login de Usuário
+      description: Endpoint para autenticar um usuário e gerar um token JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email do usuário
+                senha:
+                  type: string
+                  description: Senha do usuário
+      responses:
+        '200':
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  msg:
+                    type: string
+                    example: "Login bem-sucedido"
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Erro de validação ou de autenticação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Email não encontrado"
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  msg:
+                    type: string
+                    example: "Falha ao realizar login"
+
+
+
+  /films:
+    get:
+      tags:
+        - Gestão de filmes
+      summary: "Listar todos os filmes"
+      responses:
+        '200':
+          description: Lista de filmes retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  films:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Film'
+                  totalCount:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+        '500':
+          description: Erro ao buscar filmes
+    post:
+      tags:
+        - Gestão de filmes
+      summary: "Criar um novo filme"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Film'
+      responses:
+        '201':
+          description: Filme criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Film'
+        '400':
+          description: Erro na validação dos dados
+        '401':
+          description: Não autorizado
+        '403':
+          description: Acesso negado
+        '500':
+          description: Erro interno do servidor
+
+  /films/{id}:
+    get:
+      tags:
+        - Gestão de filmes
+      summary: "Buscar filme por ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do filme
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Filme retornado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Film'
+        '404':
+          description: Filme não encontrado
+        '500':
+          description: Erro ao buscar o filme
+    put:
+      tags:
+        - Gestão de filmes
+      summary: "Atualizar um filme"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do filme
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Film'
+      responses:
+        '200':
+          description: Filme atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Film'
+        '400':
+          description: Erro na validação dos dados
+        '401':
+          description: Não autorizado
+        '403':
+          description: Acesso negado
+        '404':
+          description: Filme não encontrado
+        '500':
+          description: Erro interno do servidor
+    delete:
+      tags:
+        - Gestão de filmes
+      summary: "Excluir um filme"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do filme
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Filme excluído com sucesso
+        '401':
+          description: Não autorizado
+        '403':
+          description: Acesso negado
+        '404':
+          description: Filme não encontrado
+        '500':
+          description: Erro interno do servidor
+
+  /films/title:
+    get:
+      tags:
+        - Gestão de filmes
+      summary: "Pesquisar filmes por título"
+      parameters:
+        - name: title
+          in: query
+          required: true
+          description: Título do filme para pesquisa
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de filmes retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  films:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Film'
+        '400':
+          description: Título é obrigatório
+        '500':
+          description: Erro ao buscar filmes por título
+
+  /films/age-rating:
+    get:
+      tags:
+        - Gestão de filmes
+      summary: "Pesquisar filmes por classificação etária"
+      parameters:
+        - name: ageRating
+          in: query
+          required: true
+          description: Classificação etária para pesquisa
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Número da página para paginação
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Número de filmes por página
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de filmes retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  films:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Film'
+                  totalCount:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+        '400':
+          description: Parâmetros inválidos
+        '500':
+          description: Erro ao buscar filmes por classificação etária

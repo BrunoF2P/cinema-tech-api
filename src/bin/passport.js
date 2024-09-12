@@ -1,16 +1,16 @@
-import passport from 'passport'
-import {jwtConfig} from './jwtConfig.js'
-import {Strategy, ExtractJwt } from 'passport-jwt'
-import prisma from '../../prismaClient.js'
+import passport from 'passport';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { jwtConfig } from './jwtConfig.js';
+import prisma from '../../prismaClient.js';
 
-passport.use(new Strategy({
-    _jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    _secretOrKeyProvider: jwtConfig.secret
-}, async (jwtPayload, done) =>{
+passport.use(new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: jwtConfig().secret,
+}, async (jwtPayload, done) => {
     try {
         // Busca o usuário no banco de dados
         const user = await prisma.usuario.findUnique({
-            where: { id_usuario: jwtPayload.userId }
+            where: { id_usuario: jwtPayload.userId },
         });
 
         if (user) {
@@ -23,4 +23,4 @@ passport.use(new Strategy({
     }
 }));
 
-passport.initialize();
+export default passport;

@@ -58,18 +58,45 @@ async function registerUser(req, res) {
 }
 
 
-        const payload = { userId: novoUsuario.id_usuario };
+async function loginUser(req, res) {
+    const { email, senha } = req.body;
+
+    // Valida os campos de entrada
+    const validation = validationResult(req);
+    if (!validation.isEmpty()) {
+        return res.status(400).json({ erro: validation.array() });
+    }
+
+    try {
+        // Verifica se o email está cadastrado
+        const usuario = await findUserByEmail(email);
+        if (!usuario) {
+            return res.status(400).json({ msg: 'Email não encontrado', path: 'email' });
+        }
+
+        // Verifica a senha
+        const senhaValida = await bcrypt.compare(senha, usuario.senha);
+        if (!senhaValida) {
+            return res.status(400).json({ msg: 'Senha incorreta', path: 'senha' });
+        }
+
+        // Cria o payload com base no usuário
+        const payload = {
+            userId: usuario.id_usuario,
+            role: usuario.tipoUsuario // Supondo que tipoUsuario está disponível aqui
+        };
+
+        // Configuração do JWT
         const config = jwtConfig();
         const token = jwt.sign(payload, config.secret, {
             expiresIn: config.expiresIn,
             algorithm: config.algorithm,
         });
 
-        res.json({ success: true, message: 'Usuário cadastrado com sucesso', token });
-
+        res.json({ success: true, msg: 'Login bem-sucedido', token });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ success: false, message: 'Falha ao cadastrar o usuário' });
+        res.status(500).json({ success: false, msg: 'Falha ao realizar login' });
     }
 }
-export {registerUser};
+export {registerUser, loginUser};

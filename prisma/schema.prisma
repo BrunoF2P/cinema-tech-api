@@ -75,6 +75,7 @@ model Filme {
   id_filme             Int           @id @default(autoincrement())
   id_api               Int?          @db.Int
   titulo               String        @db.VarChar(255)
+  slug                 String        @unique @db.VarChar(100)
   sinopse              String        @db.Text
   data_lancamento      DateTime      @db.Date
   duracao              Int           @db.Int

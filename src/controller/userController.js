@@ -14,20 +14,22 @@ async function registerUser(req, res) {
     }
 
     try {
+
+        // Verifica cpf já possui cadastro
         const cpfExiste = await findUserByCpf(cpf);
         if (cpfExiste) {
-            return res.status(400).json({ message: 'CPF já está cadastrado' });
+            return res.status(400).json({ msg: 'CPF já está cadastrado', path: 'cpf' });
         }
 
+        // Verifica se o email está cadastrado
         const emailExiste = await findUserByEmail(email);
         if (emailExiste) {
-            return res.status(400).json({ message: 'Email já possui cadastro' });
+            return res.status(400).json({ msg: 'Email já possui cadastro', path: 'email' });
         }
 
-
-
         const senhaHash = await bcrypt.hash(senha, 10);
-        const userData = {
+
+        const userData = await createUser ({
             nome,
             senha: senhaHash,
             email,
@@ -37,9 +39,24 @@ async function registerUser(req, res) {
             tipoUsuario: {
                 connect: { id_tipo_usuario: tipoUsuarioId },
             },
-        };
+        })
 
-        const novoUsuario = await createUser(userData);
+
+        const payload = { userId: userData.id_usuario, role: userData.tipoUsuario  };
+        const config = jwtConfig();
+        const token = jwt.sign(payload, config.secret, {
+            expiresIn: config.expiresIn,
+            algorithm: config.algorithm,
+        });
+
+        res.json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, msg: 'Falha ao cadastrar o usuário' });
+    }
+}
+
 
         const payload = { userId: novoUsuario.id_usuario };
         const config = jwtConfig();

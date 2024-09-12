@@ -40,21 +40,9 @@ function isValidCPF  (cpf)  {
     return true;
 }
 
-// Função para validar data no formato DD-MM-YYYY
-function isValidDate  (dateString)  {
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateString.match(regex)) return false;
-
-    const date = new Date(dateString);
-    const timestamp = date.getTime();
-    if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) return false;
-
-    return date.toISOString().startsWith(dateString);
-};
-
 // Função para validar nome (permitir letras, acentos e espaços)
 function isValidName (name)  {
     // Permite letras, acentos e espaços
     return /^[a-zA-ZÀ-ÖØ-ÿ\s]+$/.test(name);
 }
-export {isValidName, isValidDate, isValidCPF}
+export {isValidName, isValidCPF}

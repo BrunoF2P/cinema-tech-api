@@ -3,59 +3,273 @@ info:
   title: Cinema Tech API
   description: Gerenciamento de cinema de ponta a ponta
   version: 1.0.0
-
 servers:
   - description: Teste local
-    url: http://localhost:3000/v1
-
+    url: 'http://localhost:3000/v1'
 components:
   securitySchemes:
     JWT:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  schemas:
-    Film:
-          type: object
-          properties:
-            id_filme:
-              type: integer
-              description: ID do filme
-            titulo:
-              type: string
-              description: Título do filme
-            sinopse:
-              type: string
-              description: Sinopse do filme
-            data_lancamento:
-              type: string
-              format: date
-              description: Data de lançamento do filme
-            duracao:
-              type: integer
-              description: Duração do filme em minutos
-            classificacao_etaria:
-              type: string
-              description: Classificação etária do filme
-            poster_path:
-              type: string
-              description: URL da imagem de poster
-            backdrop_path:
-              type: string
-              description: URL da imagem de cartaz
-            nota_imdb:
-              type: number
-              format: float
-              description: Nota do IMDb do filme
-          required:
-            - titulo
-            - data_lancamento
-            - duracao
-            - classificacao_etaria
-            - poster_path
-            - backdrop_path
-            - nota_imdb
+      description: |
+        O sistema utiliza autenticação baseada em JWT (JSON Web Token). Após realizar o cadastro no endpoint `/register` ou efetuar login no endpoint `/login`, um token JWT será gerado. 
 
+        Para acessar endpoints protegidos, você deve incluir o token JWT no no campo "Value:". 
+
+        **Atenção:** Acesso a determinados endpoints requer permissões administrativas. Certifique-se de que você possui as credenciais apropriadas antes de tentar acessar esses recursos.
+  schemas:
+    Filmes:
+      type: object
+      properties:
+        titulo:
+          type: string
+        sinopse:
+          type: string
+        data_lancamento:
+          type: string
+        duracao:
+          type: integer
+        classificacao_etaria:
+          type: integer
+        poster_path:
+          type: string
+        backdrop_path:
+          type: string
+        nota_imdb:
+          type: number
+        generos:
+          type: array
+          items:
+            type: integer
+      x-examples:
+        Example 1:
+          titulo: Exemplo de Filme
+          sinopse: Uma breve descrição do filme.
+          data_lancamento: '2024-09-01'
+          duracao: 120
+          classificacao_etaria: 12
+          poster_path: 'https://link.net/'
+          backdrop_path: 'https://link.net/'
+          nota_imdb: 8.7
+          generos:
+            - 1
+            - 4
+            - 6
+    Generos:
+      type: object
+      properties:
+        nome_genero:
+          type: string
+      x-examples:
+        Example 1:
+          nome_genero: Aventura
+    Estados:
+      type: object
+      properties:
+        nome_estado:
+          type: string
+        sigla_estado:
+          type: string
+      x-examples:
+        Example 1:
+          nome_estado: ''
+          sigla_estado: SA
+    Cidades:
+      type: object
+      properties:
+        nome_cidade:
+          type: string
+        id_estado:
+          type: integer
+      x-examples:
+        Example 1:
+          nome_cidade: Alagoinhas
+          id_estado: 11
+  responses:
+    '200':
+      description: Filme retornado com sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              msg:
+                type: string
+              filmData:
+                type: object
+                properties:
+                  id_filme:
+                    type: integer
+                  id_api:
+                    type: integer
+                  titulo:
+                    type: string
+                  slug:
+                    type: string
+                  sinopse:
+                    type: string
+                  data_lancamento:
+                    type: string
+                  duracao:
+                    type: integer
+                  classificacao_etaria:
+                    type: integer
+                  poster_path:
+                    type: string
+                  backdrop_path:
+                    type: string
+                  nota_imdb:
+                    type: string
+            x-examples:
+              Example 1:
+                success: true
+                msg: Filme cadastrado com sucesso
+                filmData:
+                  id_filme: 1
+                  id_api: null
+                  titulo: Exemplo de Filme
+                  slug: exemplo-de-filme
+                  sinopse: Uma breve descrição do filme.
+                  data_lancamento: '2024-09-01T00:00:00.000Z'
+                  duracao: 120
+                  classificacao_etaria: 12
+                  poster_path: 'https://meupc.net/'
+                  backdrop_path: 'https://meupc.net/'
+                  nota_imdb: '8.7'
+      headers: {}
+    '400':
+      description: Parâmetros inválidos
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+            x-examples:
+              Example 1:
+                msg: Não autorizado
+    '401':
+      description: Não autorizado
+      content: {}
+    '403':
+      description: Acesso negado. Apenas administradores podem acessar esta rota.
+      content: {}
+    '404':
+      description: Não encontrado
+      content: {}
+    '500':
+      description: Falha ao buscar os dados
+      content: {}
+    200-Generos:
+      description: Genero retornado com sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              msg:
+                type: string
+              genre:
+                type: object
+                properties:
+                  id_genero:
+                    type: integer
+                  id_api:
+                    type: integer
+                  nome_genero:
+                    type: string
+            x-examples:
+              Example 1:
+                success: true
+                msg: Gênero criado com sucesso
+                genre:
+                  id_genero: 1
+                  id_api: null
+                  nome_genero: Aventura
+          examples:
+            Example 1:
+              value:
+                success: true
+                msg: string
+                genre:
+                  id_genero: 0
+                  id_api: 0
+                  nome_genero: string
+    200-Estados:
+      description: Estado retornado com sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              msg:
+                type: string
+              state:
+                type: object
+                properties:
+                  id_estado:
+                    type: integer
+                  nome_estado:
+                    type: string
+                  sigla_estado:
+                    type: string
+            x-examples:
+              Example 1:
+                success: true
+                msg: Estado encontrado com sucesso
+                state:
+                  id_estado: 35
+                  nome_estado: São Paulo
+                  sigla_estado: SP
+    200-Cidades:
+      description: Cidade retornado com sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              msg:
+                type: string
+              city:
+                type: object
+                properties:
+                  id_cidade:
+                    type: integer
+                  nome_cidade:
+                    type: string
+                  id_estado:
+                    type: integer
+                  estado:
+                    type: object
+                    properties:
+                      id_estado:
+                        type: integer
+                      nome_estado:
+                        type: string
+                      sigla_estado:
+                        type: string
+            x-examples:
+              Example 1:
+                success: true
+                msg: Cidade encontrada com sucesso
+                city:
+                  id_cidade: 4
+                  nome_cidade: Cacoal
+                  id_estado: 11
+                  estado:
+                    id_estado: 11
+                    nome_estado: Rondônia
+                    sigla_estado: RO
 paths:
   /register:
     post:
@@ -72,27 +286,45 @@ paths:
               properties:
                 nome:
                   type: string
-                  description: Nome completo do usuário
                 email:
                   type: string
-                  format: email
-                  description: Email do usuário
                 senha:
                   type: string
-                  description: Senha do usuário
                 re_senha:
                   type: string
-                  description: Confirmação da senha
                 cpf:
                   type: string
-                  description: CPF do usuário
                 data_nascimento:
                   type: string
-                  format: date
-                  description: Data de nascimento do usuário no formato YYYY-MM-DD
+                id_estado:
+                  type: integer
+                id_cidade:
+                  type: integer
                 codigo_ref:
                   type: string
-                  description: Código de referência para determinar o tipo de usuário
+              x-examples:
+                Example 1:
+                  nome: Bruno Bispo
+                  email: bruno@example.com
+                  senha: senha123
+                  re_senha: senha123
+                  cpf: '66115166039'
+                  data_nascimento: '1990-01-01'
+                  id_estado: 29
+                  id_cidade: 1835
+                  codigo_ref: LP3
+            examples:
+              Example 1:
+                value:
+                  nome: string
+                  email: string@gmail.com
+                  senha: string
+                  re_senha: string
+                  cpf: '12345678901'
+                  data_nascimento: '2000-10-10'
+                  id_estado: 0
+                  id_cidade: 0
+                  codigo_ref: ''
       responses:
         '200':
           description: Cadastro bem-sucedido
@@ -106,10 +338,10 @@ paths:
                     example: true
                   message:
                     type: string
-                    example: "Usuário cadastrado com sucesso"
+                    example: Usuário cadastrado com sucesso
                   token:
                     type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
           description: Erro de validação ou de dados
           content:
@@ -138,8 +370,7 @@ paths:
                     example: false
                   msg:
                     type: string
-                    example: "Falha ao cadastrar o usuário"
-
+                    example: Falha ao cadastrar o usuário
   /login:
     post:
       tags:
@@ -173,10 +404,10 @@ paths:
                     example: true
                   msg:
                     type: string
-                    example: "Login bem-sucedido"
+                    example: Login bem-sucedido
                   token:
                     type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
           description: Erro de validação ou de autenticação
           content:
@@ -186,7 +417,7 @@ paths:
                 properties:
                   msg:
                     type: string
-                    example: "Email não encontrado"
+                    example: Email não encontrado
         '500':
           description: Erro interno do servidor
           content:
@@ -199,15 +430,12 @@ paths:
                     example: false
                   msg:
                     type: string
-                    example: "Falha ao realizar login"
-
-
-
+                    example: Falha ao realizar login
   /films:
     get:
       tags:
         - Gestão de filmes
-      summary: "Listar todos os filmes"
+      summary: Listar todos os filmes
       responses:
         '200':
           description: Lista de filmes retornada com sucesso
@@ -223,48 +451,57 @@ paths:
                   films:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Film'
+                      $ref: '#/components/schemas/Filmes'
                   totalCount:
                     type: integer
                   totalPages:
                     type: integer
                   currentPage:
                     type: integer
+        '400':
+          $ref: '#/components/responses/400'
         '500':
-          description: Erro ao buscar filmes
+          $ref: '#/components/responses/500'
+      parameters:
+        - schema:
+            type: number
+            example: 1
+          in: query
+          name: page
+        - schema:
+            type: number
+            example: 10
+          in: query
+          name: limite
     post:
       tags:
         - Gestão de filmes
-      summary: "Criar um novo filme"
+      summary: Criar um novo filme
       security:
-        - BearerAuth: []
+        - JWT: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Film'
+              $ref: '#/components/schemas/Filmes'
       responses:
-        '201':
-          description: Filme criado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Film'
+        '200':
+          $ref: '#/components/responses/200'
         '400':
           description: Erro na validação dos dados
         '401':
-          description: Não autorizado
+          $ref: '#/components/responses/401'
         '403':
-          description: Acesso negado
+          $ref: '#/components/responses/403'
         '500':
           description: Erro interno do servidor
-
-  /films/{id}:
+      parameters: []
+  '/films/{id}':
     get:
       tags:
         - Gestão de filmes
-      summary: "Buscar filme por ID"
+      summary: Buscar filme por ID
       parameters:
         - name: id
           in: path
@@ -274,21 +511,18 @@ paths:
             type: integer
       responses:
         '200':
-          description: Filme retornado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Film'
+          $ref: '#/components/responses/200'
         '404':
-          description: Filme não encontrado
+          $ref: '#/components/responses/404'
         '500':
-          description: Erro ao buscar o filme
+          $ref: '#/components/responses/500'
+      operationId: ''
     put:
       tags:
         - Gestão de filmes
-      summary: "Atualizar um filme"
+      summary: Atualizar um filme
       security:
-        - BearerAuth: []
+        - JWT: []
       parameters:
         - name: id
           in: path
@@ -301,30 +535,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Film'
+              $ref: '#/components/schemas/Filmes'
       responses:
         '200':
-          description: Filme atualizado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Film'
+          $ref: '#/components/responses/200'
         '400':
-          description: Erro na validação dos dados
+          $ref: '#/components/responses/400'
         '401':
-          description: Não autorizado
+          $ref: '#/components/responses/401'
         '403':
-          description: Acesso negado
+          $ref: '#/components/responses/403'
         '404':
-          description: Filme não encontrado
+          $ref: '#/components/responses/404'
         '500':
-          description: Erro interno do servidor
+          $ref: '#/components/responses/500'
     delete:
       tags:
         - Gestão de filmes
-      summary: "Excluir um filme"
+      summary: Excluir um filme
       security:
-        - BearerAuth: []
+        - JWT: []
       parameters:
         - name: id
           in: path
@@ -335,20 +565,21 @@ paths:
       responses:
         '200':
           description: Filme excluído com sucesso
+        '400':
+          $ref: '#/components/responses/400'
         '401':
-          description: Não autorizado
+          $ref: '#/components/responses/401'
         '403':
-          description: Acesso negado
+          $ref: '#/components/responses/403'
         '404':
-          description: Filme não encontrado
+          $ref: '#/components/responses/404'
         '500':
-          description: Erro interno do servidor
-
+          $ref: '#/components/responses/500'
   /films/title:
     get:
       tags:
         - Gestão de filmes
-      summary: "Pesquisar filmes por título"
+      summary: Pesquisar filmes por título
       parameters:
         - name: title
           in: query
@@ -358,30 +589,16 @@ paths:
             type: string
       responses:
         '200':
-          description: Lista de filmes retornada com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  msg:
-                    type: string
-                  films:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Film'
+          $ref: '#/components/responses/200'
         '400':
-          description: Título é obrigatório
+          $ref: '#/components/responses/400'
         '500':
-          description: Erro ao buscar filmes por título
-
+          $ref: '#/components/responses/500'
   /films/age-rating:
     get:
       tags:
         - Gestão de filmes
-      summary: "Pesquisar filmes por classificação etária"
+      summary: Pesquisar filmes por classificação etária
       parameters:
         - name: ageRating
           in: query
@@ -416,14 +633,514 @@ paths:
                   films:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Film'
+                      type: object
+                      properties:
+                        id_filme:
+                          type: integer
+                        id_api:
+                          type: integer
+                        titulo:
+                          type: string
+                        slug:
+                          type: string
+                        sinopse:
+                          type: string
+                        data_lancamento:
+                          type: string
+                        duracao:
+                          type: integer
+                        classificacao_etaria:
+                          type: integer
+                        poster_path:
+                          type: string
+                        backdrop_path:
+                          type: string
+                        nota_imdb:
+                          type: string
+                        generos:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id_genero:
+                                type: integer
+                              id_api:
+                                type: integer
+                              nome_genero:
+                                type: string
                   totalCount:
                     type: integer
                   totalPages:
                     type: integer
                   currentPage:
                     type: integer
+                x-examples:
+                  Example 1:
+                    success: true
+                    msg: Pesquisa solicitada com sucesso
+                    films:
+                      - id_filme: 1
+                        id_api: null
+                        titulo: Exemplo de Filme
+                        slug: exemplo-de-filme
+                        sinopse: Uma breve descrição do filme.
+                        data_lancamento: '2024-09-01T00:00:00.000Z'
+                        duracao: 120
+                        classificacao_etaria: 12
+                        poster_path: 'https://meupc.net/'
+                        backdrop_path: 'https://meupc.net/'
+                        nota_imdb: '8.7'
+                        generos:
+                          - id_genero: 1
+                            id_api: null
+                            nome_genero: Aventura
+                    totalCount: 1
+                    totalPages: 1
+                    currentPage: 1
         '400':
-          description: Parâmetros inválidos
+          $ref: '#/components/responses/400'
         '500':
-          description: Erro ao buscar filmes por classificação etária
+          $ref: '#/components/responses/500'
+  /films/genre:
+    get:
+      tags:
+        - Gestão de filmes
+      summary: Listar filmes por gênero
+      description: Retorna uma lista paginada de filmes filtrados por gênero.
+      parameters:
+        - in: query
+          name: genreId
+          schema:
+            type: integer
+          required: true
+          description: ID do gênero para filtrar os filmes.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número da página para a paginação dos resultados.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Número de filmes por página para a paginação dos resultados.
+      responses:
+        '200':
+          description: Lista de filmes retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  films:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_filme:
+                          type: integer
+                        id_api:
+                          type: integer
+                        titulo:
+                          type: string
+                        slug:
+                          type: string
+                        sinopse:
+                          type: string
+                        data_lancamento:
+                          type: string
+                        duracao:
+                          type: integer
+                        classificacao_etaria:
+                          type: integer
+                        poster_path:
+                          type: string
+                        backdrop_path:
+                          type: string
+                        nota_imdb:
+                          type: string
+                        generos:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id_genero:
+                                type: integer
+                              id_api:
+                                type: integer
+                              nome_genero:
+                                type: string
+                  totalCount:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+                x-examples:
+                  Example 1:
+                    success: true
+                    msg: Pesquisa solicitada com sucesso
+                    films:
+                      - id_filme: 1
+                        id_api: null
+                        titulo: Exemplo de Filme
+                        slug: exemplo-de-filme
+                        sinopse: Uma breve descrição do filme.
+                        data_lancamento: '2024-09-01T00:00:00.000Z'
+                        duracao: 120
+                        classificacao_etaria: 12
+                        poster_path: 'https://meupc.net/'
+                        backdrop_path: 'https://meupc.net/'
+                        nota_imdb: '8.7'
+                        generos:
+                          - id_genero: 1
+                            id_api: null
+                            nome_genero: Aventura
+                    totalCount: 1
+                    totalPages: 1
+                    currentPage: 1
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /genres:
+    get:
+      summary: Lista todos os gêneros
+      tags:
+        - Gerenciar generos
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Generos'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-genres
+      parameters: []
+    post:
+      summary: Cria um novo gênero
+      tags:
+        - Gerenciar generos
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Generos'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: post-genres
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Generos'
+            examples:
+              Example 1:
+                value:
+                  success: true
+                  msg: string
+                  genre:
+                    id_genero: 0
+                    nome_genero: string
+  '/genres/{id}':
+    get:
+      summary: Buscar gêneros por ID
+      tags:
+        - Gerenciar generos
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Generos'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          description: Not Found
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: 'get-genres-:id'
+    parameters:
+      - schema:
+          type: number
+        name: id
+        in: path
+        required: true
+    put:
+      summary: Atualizar gênero
+      tags:
+        - Gerenciar generos
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Generos'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: put-genres-id
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Generos'
+    delete:
+      summary: Deletar gênero
+      tags:
+        - Gerenciar generos
+      responses:
+        '200':
+          description: Genero excuido com sucesso
+      operationId: delete-genres-id
+      security:
+        - JWT: []
+  /states:
+    get:
+      summary: Lista todos os estados
+      tags:
+        - Gerenciar estados
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Estados'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-states
+    post:
+      summary: Criar um novo estado
+      tags:
+        - Gerenciar estados
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Generos'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          description: Unauthorized
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: post-states
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Estados'
+  '/states/{id}':
+    parameters:
+      - schema:
+          type: number
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Buscar estados por ID
+      tags:
+        - Gerenciar estados
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Estados'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-states-id
+    delete:
+      summary: Deletar estados
+      tags:
+        - Gerenciar estados
+      responses:
+        '200':
+          description: Estado apagado com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: delete-states-id
+      security:
+        - JWT: []
+  '/states/{id}/cities':
+    parameters:
+      - schema:
+          type: number
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Buscar cidades por estado
+      tags:
+        - Gerenciar estados
+      responses:
+        '200':
+          description: Cidades retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  cities:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_cidade:
+                          type: integer
+                        nome_cidade:
+                          type: string
+                        id_estado:
+                          type: integer
+                        estado:
+                          type: object
+                          properties:
+                            id_estado:
+                              type: integer
+                            nome_estado:
+                              type: string
+                            sigla_estado:
+                              type: string
+                x-examples:
+                  Example 1:
+                    success: true
+                    msg: Cidades encontradas com sucesso
+                    cities:
+                      - id_cidade: 1
+                        nome_cidade: Alta Floresta D'Oeste
+                        id_estado: 11
+                        estado:
+                          id_estado: 11
+                          nome_estado: Rondônia
+                          sigla_estado: RO
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-states-id-cities
+  /cities:
+    get:
+      summary: Lista todas as cidades
+      tags:
+        - Gerenciar cidades
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cidades'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-cities
+    post:
+      summary: Criar uma nova cidade
+      tags:
+        - Gerenciar cidades
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cidades'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: post-cities
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cidades'
+  '/cities/{id}':
+    parameters:
+      - schema:
+          type: number
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Buscar cidades por ID
+      tags:
+        - Gerenciar cidades
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cidades'
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-cities-id
+    put:
+      summary: Atualizar cidade
+      tags:
+        - Gerenciar cidades
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cidades'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: put-cities-id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cidades'
+            examples: {}
+      security:
+        - JWT: []
+    delete:
+      summary: Deletar cidades
+      tags:
+        - Gerenciar cidades
+      responses:
+        '200':
+          description: Cidade apagada com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          description: Unauthorized
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: delete-cities-id
+      security:
+        - JWT: []

@@ -26,9 +26,24 @@ async function findTypeUserByDescription (descricao) {
 
 }
 
-async function createUser (userData) {
+async function createUser(userData) {
     return prisma.usuario.create({
-        data: userData,
+        data: {
+            nome: userData.nome,
+            senha: userData.senha,
+            email: userData.email,
+            cpf: userData.cpf,
+            data_nascimento: userData.data_nascimento,
+            estado: {
+                connect: { id_estado: userData.id_estado },
+            },
+            cidade: {
+                connect: { id_cidade: userData.id_cidade },
+            },
+            tipoUsuario: {
+                connect: { id_tipo_usuario: userData.tipoUsuarioId },
+            },
+        },
     });
 }
 

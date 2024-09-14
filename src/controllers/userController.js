@@ -3,9 +3,11 @@ import bcrypt from 'bcryptjs'
 import {findUserByEmail, createUser, findUserByCpf} from '../repositories/userRepository.js'
 import jwt from 'jsonwebtoken';
 import {jwtConfig} from '../bin/jwtConfig.js';
+import {getStateById} from "../repositories/stateRepository.js";
+import {getCityById} from "../repositories/cityRepository.js";
 
 async function registerUser(req, res) {
-    const { nome, senha, email, cpf, data_nascimento, enderecoId, tipoUsuarioId } = req.body;
+    const { nome, senha, email, cpf, data_nascimento, id_estado, id_cidade, tipoUsuarioId } = req.body;
 
     // Valida os campos de entrada
     const validation = validationResult(req);
@@ -16,16 +18,34 @@ async function registerUser(req, res) {
     try {
 
         // Verifica cpf já possui cadastro
-        const cpfExiste = await findUserByCpf(cpf);
-        if (cpfExiste) {
+        const cpfExist = await findUserByCpf(cpf);
+        if (cpfExist) {
             return res.status(400).json({ msg: 'CPF já está cadastrado', path: 'cpf' });
         }
 
         // Verifica se o email está cadastrado
-        const emailExiste = await findUserByEmail(email);
-        if (emailExiste) {
+        const emailExist = await findUserByEmail(email);
+        if (emailExist) {
             return res.status(400).json({ msg: 'Email já possui cadastro', path: 'email' });
         }
+
+        // Verifica se existe estado
+        const stateExist = await getStateById(id_estado);
+        if (!stateExist) {
+            return res.status(400).json({ msg: 'Estado não encontrada', path: 'endereco' });
+        }
+
+        // Verifica se a cidade existe
+        const cityExist = await getCityById(id_cidade);
+        if (!cityExist) {
+            return res.status(400).json({ msg: 'Cidade não encontrada', path: 'endereco' });
+        }
+
+        // Verifica se a cidade está relacionada com o estado
+        if (cityExist.id_estado !== stateExist.id_estado) {
+            return res.status(400).json({ msg: 'Cidade não pertence ao estado fornecido', path: 'endereco' });
+        }
+
 
         const senhaHash = await bcrypt.hash(senha, 10);
 
@@ -35,10 +55,9 @@ async function registerUser(req, res) {
             email,
             cpf,
             data_nascimento: new Date(data_nascimento),
-            ...(enderecoId ? { endereco: { connect: { id_endereco: enderecoId } } } : {}),
-            tipoUsuario: {
-                connect: { id_tipo_usuario: tipoUsuarioId },
-            },
+            id_estado,
+            id_cidade,
+            tipoUsuarioId,
         })
 
 
@@ -52,7 +71,6 @@ async function registerUser(req, res) {
         res.json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
 
     } catch (err) {
-        console.error(err);
         res.status(500).json({ success: false, msg: 'Falha ao cadastrar o usuário' });
     }
 }

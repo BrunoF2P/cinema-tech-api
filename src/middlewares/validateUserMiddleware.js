@@ -30,6 +30,14 @@ const validationRegister = [
     }),
     check('data_nascimento').notEmpty().withMessage('Data de nascimento é obrigatória')
         .isISO8601().withMessage('Data de nascimento deve estar no formato (YYYY-MM-DD)'),
+
+    check('id_estado')
+        .optional()
+        .isInt().withMessage('ID de estado deve ser um número inteiro'),
+
+    check('id_cidade')
+        .optional()
+        .isInt().withMessage('ID de cidade deve ser um número inteiro'),
 ];
 
 async function validateTipeUser(req, res, next) {

@@ -19,13 +19,15 @@ model Usuario {
   cpf             String      @unique @db.VarChar(255)
   email           String      @unique @db.VarChar(100)
   data_nascimento DateTime    @db.Date
-  endereco        Endereco?   @relation(fields: [id_endereco], references: [id_endereco])
+  cidade          Cidade      @relation(fields: [id_cidade], references: [id_cidade])
+  estado          Estado      @relation(fields: [id_estado], references: [id_estado])
   senha           String      @db.VarChar(255)
   tipoUsuario     TipoUsuario @relation(fields: [id_tipo_usuario], references: [id_tipo_usuario])
   data_cadastro   DateTime    @default(now()) @db.Timestamp
   reservas        Reserva[]
 
-  id_endereco     Int?
+  id_cidade       Int
+  id_estado       Int
   id_tipo_usuario Int
   Ingresso        Ingresso[]
 
@@ -40,33 +42,22 @@ model TipoUsuario {
   @@map("tipo_usuarios")
 }
 
-model Endereco {
-  id_endereco Int       @id @default(autoincrement())
-  id_cidade   Int
-  id_estado   Int
-  cidade      Cidade    @relation(fields: [id_cidade], references: [id_cidade])
-  estado      Estado    @relation(fields: [id_estado], references: [id_estado])
-  usuarios    Usuario[]
-
-  @@map("enderecos")
-}
-
 model Cidade {
-  id_cidade   Int        @id @default(autoincrement())
-  nome_cidade String     @db.VarChar(100)
+  id_cidade   Int       @id @default(autoincrement())
+  nome_cidade String    @db.VarChar(100)
   id_estado   Int
-  estado      Estado     @relation(fields: [id_estado], references: [id_estado])
-  enderecos   Endereco[]
+  estado      Estado    @relation(fields: [id_estado], references: [id_estado], onDelete: Cascade, onUpdate: Cascade)
+  usuarios    Usuario[]
 
   @@map("cidades")
 }
 
 model Estado {
-  id_estado    Int        @id @default(autoincrement())
-  nome_estado  String     @unique @db.VarChar(100)
-  sigla_estado String     @unique @db.VarChar(2)
+  id_estado    Int       @id @default(autoincrement())
+  nome_estado  String    @unique @db.VarChar(100)
+  sigla_estado String    @unique @db.VarChar(2)
   cidades      Cidade[]
-  enderecos    Endereco[]
+  usuarios     Usuario[]
 
   @@map("estados")
 }

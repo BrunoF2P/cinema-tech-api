@@ -44,6 +44,17 @@
    ```env
    DATABASE_URL="mysql://usuario:senha@localhost:porta/banco_dados"
 
+### 🔧 Instalação do MySQL
+
+Para rodar o projeto localmente, você precisará de um servidor MySQL. Existem duas opções principais:
+
+- **Instalar MySQL localmente**:
+   - Se você quiser rodar o banco de dados MySQL localmente, faça o download e a instalação a partir do site oficial: [MySQL](https://dev.mysql.com/downloads/installer/).
+   - Após a instalação, configure o MySQL para rodar no seu computador, crie um banco de dados e ajuste a variável `DATABASE_URL` no arquivo `.env` conforme necessário.
+
+- **Usar uma plataforma de hospedagem gratuita**:
+   - Se você preferir usar uma hospedagem gratuita de banco de dados, plataformas como [Heroku](https://www.heroku.com/), [Railway](https://railway.app/), ou [PlanetScale](https://planetscale.com/) oferecem serviços gratuitos de banco de dados MySQL.
+   - Após configurar o banco de dados em uma dessas plataformas, atualize a variável `DATABASE_URL` no seu arquivo `.env` com as credenciais fornecidas.
 ## 2. 📊 Inicialização do Banco de Dados
 
 Para configurar e inicializar o banco de dados para o projeto, siga os passos abaixo:

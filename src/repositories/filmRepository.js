@@ -1,7 +1,7 @@
 import prisma from '../../prismaClient.js';
 
-async function generateUniqueSlug(title) {
-    const baseSlug = generateSlug(title);
+async function generateUniqueSlug(titulo) {
+    const baseSlug = generateSlug(titulo);
     let uniqueSlug = baseSlug;
     let counter = 1;
 
@@ -13,21 +13,24 @@ async function generateUniqueSlug(title) {
     return uniqueSlug;
 }
 
-function generateSlug(title) {
-    return title
+function generateSlug(titulo) {
+    return titulo
         .toLowerCase()
         .replace(/ /g, '-')
         .replace(/[^\w-]+/g, '');    // Remove caracteres especiais
 }
+
 async function createFilm (filmData) {
-    const slug = await generateUniqueSlug(filmData.titulo);
-    return prisma.filme.create({ data: filmData.data, slug });
+    return prisma.filme.create({ data: filmData.data});
 }
 
-async function getAllFilms   ({skip = 0, take = 10 })  {
+async function getAllFilms ({skip = 0, take = 10 })  {
     const films = await prisma.filme.findMany({
         skip,
         take,
+        include: {
+            generos: true,
+        },
     });
 
     const totalCount = await prisma.filme.count();
@@ -40,7 +43,10 @@ async function getAllFilms   ({skip = 0, take = 10 })  {
 
 async function getFilmById(id) {
     return prisma.filme.findUnique({
-        where: { id_filme: id }
+        where: { id_filme: id },
+        include: {
+            generos: true,
+        },
     });
 }
 
@@ -49,7 +55,6 @@ async function searchFilmsByTitle  (title)  {
         where: {
             titulo: {
                 contains: title,
-                mode: 'insensitive',
             },
         },
     });
@@ -83,14 +88,42 @@ async function deleteFilm(id) {
 }
 
 async function updateFilm(id, filmData) {
-    const slug = await generateUniqueSlug(filmData.titulo);
     return prisma.filme.update({
         where: { id_filme: id },
-        data: {
-            ...filmData,
-            slug
-        }
+        data: filmData,
     });
 }
 
-export {createFilm, getAllFilms, getFilmById, searchFilmsByTitle, searchFilmsByAgeRating, deleteFilm, updateFilm}
+async function searchFilmsByGenre({ genreId, skip = 0, take = 10 }) {
+    const films = await prisma.filme.findMany({
+        where: {
+            generos: {
+                some: {
+                    id_genero: genreId,
+                },
+            },
+        },
+        skip,
+        take,
+        include: {
+            generos: true,
+        },
+    });
+
+    const totalCount = await prisma.filme.count({
+        where: {
+            FilmeGenero: {
+                some: {
+                    id_genero: genreId,
+                },
+            },
+        },
+    });
+
+    return {
+        films,
+        totalCount,
+    };
+}
+
+export {createFilm, getAllFilms, getFilmById, searchFilmsByTitle, searchFilmsByAgeRating, deleteFilm, updateFilm, searchFilmsByGenre, generateUniqueSlug}

@@ -32,11 +32,9 @@ const validationRegister = [
         .isISO8601().withMessage('Data de nascimento deve estar no formato (YYYY-MM-DD)'),
 
     check('id_estado')
-        .optional()
         .isInt().withMessage('ID de estado deve ser um número inteiro'),
 
     check('id_cidade')
-        .optional()
         .isInt().withMessage('ID de cidade deve ser um número inteiro'),
 ];
 
@@ -51,12 +49,12 @@ async function validateTipeUser(req, res, next) {
         const { codigo_ref } = req.body;
 
         // Determinar o tipo de usuário com base no código de referência
-        let tipoUsuarioId;
+        let tipoUsuarioId = null;
 
         if (codigo_ref === 'LP3') {
             const tipoAdmin = await findTypeUserByDescription('Admin');
             tipoUsuarioId = tipoAdmin.id_tipo_usuario;
-        } else if (codigo_ref === '') {
+        } else if (codigo_ref === '' || codigo_ref === null ) {
             const tipoCliente = await findTypeUserByDescription('Cliente');
             tipoUsuarioId = tipoCliente.id_tipo_usuario;
         } else {

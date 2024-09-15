@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao Cinema Tech API</title>
+    <!-- Importando fontes do Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .button {
+            display: inline-block;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button:active {
+            background-color: #004494;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bem-vindo ao Cinema Tech API</h1>
+    <a href="<%= apiDocsUrl %>/api-docs" class="button">Documentação da API</a>
+</div>
+</body>
+</html>

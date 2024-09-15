@@ -7,6 +7,10 @@ import routers from './routes/index.js';
 import YAML from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
 import passport from "./bin/passport.js";
+import path from 'path';
+import url from 'url';
+
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 // Configurando variaveis de ambiente
 dotenv.config();
@@ -25,6 +29,14 @@ app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'public'));
+
+// Rota para a página inicial
+app.get('/', (req, res) => {
+    res.render('home', { apiDocsUrl: process.env.SERVER_URL || 'http://localhost:3000' });
+});
 
 // Documentação do Swagger
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

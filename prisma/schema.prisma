@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -64,13 +64,13 @@ model Estado {
 
 model Filme {
   id_filme             Int           @id @default(autoincrement())
-  id_api               Int?          @db.Int
+  id_api               Int?
   titulo               String        @db.VarChar(255)
   slug                 String        @unique @db.VarChar(100)
   sinopse              String        @db.Text
   data_lancamento      DateTime      @db.Date
-  duracao              Int           @db.Int
-  classificacao_etaria Int           @db.Int
+  duracao              Int
+  classificacao_etaria Int
   poster_path          String        @db.VarChar(255)
   backdrop_path        String        @db.VarChar(255)
   nota_imdb            Decimal       @db.Decimal(3, 2)
@@ -83,7 +83,7 @@ model Filme {
 
 model Genero {
   id_genero   Int           @id @default(autoincrement())
-  id_api      Int?          @db.Int
+  id_api      Int?
   nome_genero String        @unique @db.VarChar(100)
   filmes      Filme[]       @relation("FilmeGeneros")
   FilmeGenero FilmeGenero[]
@@ -105,7 +105,7 @@ model FilmeGenero {
 model Sala {
   id_sala      Int       @id @default(autoincrement())
   nome_sala    String    @db.VarChar(100)
-  capacidade   Int       @db.Int
+  capacidade   Int
   tipoSala     TipoSala  @relation(fields: [id_tipo_sala], references: [id_tipo_sala])
   id_tipo_sala Int
   ativo        Boolean   @default(true)
@@ -128,7 +128,7 @@ model Cadeira {
   sala       Sala       @relation(fields: [id_sala], references: [id_sala], onDelete: Cascade)
   id_sala    Int
   linha      String     @db.Char(1)
-  numero     Int        @db.Int
+  numero     Int
   ativo      Boolean    @default(true)
   Ingresso   Ingresso[]
 
@@ -141,7 +141,7 @@ model Sessao {
   id_filme      Int
   sala          Sala            @relation(fields: [id_sala], references: [id_sala])
   id_sala       Int
-  data_sessao   DateTime        @db.DateTime
+  data_sessao   DateTime
   reservas      Reserva[]
   Ingresso      Ingresso[]
   PrecoIngresso PrecoIngresso[]

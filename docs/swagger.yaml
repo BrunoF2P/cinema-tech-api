@@ -6,6 +6,8 @@ info:
 servers:
   - description: Teste local
     url: 'http://localhost:3000/v1'
+  - description: Producao
+    url: ${SERVER_URL}
 components:
   securitySchemes:
     JWT:

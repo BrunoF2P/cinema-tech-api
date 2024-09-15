@@ -4,10 +4,10 @@ info:
   description: Gerenciamento de cinema de ponta a ponta
   version: 1.0.0
 servers:
-  - description: Teste local
-    url: 'http://localhost:3000/v1'
   - description: Producao
     url: ${SERVER_URL}
+  - description: Teste local
+    url: 'http://localhost:3000/v1'
 components:
   securitySchemes:
     JWT:

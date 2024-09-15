@@ -20,7 +20,7 @@ const app = express();
 
 // Carrega o arquivo YAML para Swagger
 const swaggerDocument = YAML.load('docs/swagger.yaml');
-swaggerDocument.servers[1].url = process.env.SERVER_URL
+swaggerDocument.servers[0].url = `${process.env.SERVER_URL}/v1`;
 
 // Configurando middlewares
 app.use(logger('dev'));
@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 });
 
 // Documentação do Swagger
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Configurando rotas
 app.use('/v1', routers);

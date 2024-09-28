@@ -1,45 +1,28 @@
-import prisma from "../../prismaClient.js";
+import {findAll, findByUnique, create, update, deleteById, findByField} from './genericRepository.js';
 
 async function getAllCities() {
-    return prisma.cidade.findMany({
-        include: {
-            estado: true,
-        },
-    });
+    return findAll('cidade');
 }
 
 async function getCityById(id) {
-    return prisma.cidade.findUnique({
-        where: { id_cidade: id },
-        include: {
-            estado: true,
-        },
-    });
+    return findByUnique('cidade', 'id_cidade', id, { estado: true });
 }
 
 async function createCity(cityData) {
-    return prisma.cidade.create({
-        data: cityData,
-    });
+    return create('cidade', cityData);
 }
 
 async function updateCity(id, cityData) {
-    return prisma.cidade.update({
-        where: { id_cidade: id },
-        data: cityData,
-    });
+    return update('cidade', 'id_cidade', id, cityData);
 }
 
 async function deleteCity(id) {
-    return prisma.cidade.delete({
-        where: { id_cidade: id },
-    });
+    return deleteById('cidade', 'id_cidade', id);
 }
 
 async function getCitiesByStateId(stateId) {
-    return prisma.cidade.findMany({
-        where: { id_estado: stateId },
-    });
+    return findByField('cidade', 'id_estado', stateId
+    );
 }
 
 export { getAllCities, getCityById, createCity, updateCity, deleteCity, getCitiesByStateId };

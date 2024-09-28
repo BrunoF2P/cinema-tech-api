@@ -1,39 +1,27 @@
-import prisma from "../../prismaClient.js";
+import { findAll, findByUnique, create, findByField, update, deleteById } from './genericRepository.js';
 
 async function getAllStates() {
-    return prisma.estado.findMany();
+    return findAll('estado');
 }
 
 async function getStateById(id) {
-    return prisma.estado.findUnique({
-        where: { id_estado: id },
-    });
+    return findByUnique('estado', 'id_estado', id);
 }
 
 async function createState(stateData) {
-    return prisma.estado.create({
-        data: stateData,
-    });
+    return create('estado', stateData);
 }
 
 async function getStateByName(name) {
-    return prisma.estado.findUnique({
-        where: { nome_estado: name },
-    });
+    return findByUnique('estado', 'nome_estado', name);
 }
 
-
 async function updateState(id, stateData) {
-    return prisma.estado.update({
-        where: { id_estado: id },
-        data: stateData,
-    });
+    return update('estado', 'id_estado', id, stateData);
 }
 
 async function deleteState(id) {
-    return prisma.estado.delete({
-        where: { id_estado: id },
-    });
+    return deleteById('estado', 'id_estado', id);
 }
 
-export { getAllStates, getStateById, createState, updateState, deleteState, getStateByName};
+export { getAllStates, getStateById, createState, updateState, deleteState, getStateByName };

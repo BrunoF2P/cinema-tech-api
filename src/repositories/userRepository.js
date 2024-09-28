@@ -1,29 +1,16 @@
 import prisma from '../../prismaClient.js';
+import {findByUnique} from "./genericRepository.js";
 
 async function findUserByEmail  (email) {
-    return prisma.usuario.findUnique({
-        where: {
-            email: email,
-        },
-    });
-
+    return findByUnique('usuario', 'email', email);
 }
 
 async function findUserByCpf(cpf) {
-    return prisma.usuario.findUnique({
-        where: {
-            cpf: cpf,
-        },
-    });
+    return findByUnique('usuario', 'cpf', cpf);
 }
 
-async function findTypeUserByDescription (descricao) {
-    return prisma.tipoUsuario.findUnique({
-        where: {
-            descricao: descricao,
-        },
-    });
-
+async function findTypeUserByDescription(descricao) {
+    return findByUnique('tipoUsuario', 'descricao', descricao);
 }
 
 async function createUser(userData) {

@@ -1,4 +1,4 @@
-import {findAll, findByUnique, create, findByField, update, deleteById} from './genericRepository.js';
+import {findAll, findByUnique, create, update, deleteById} from './genericRepository.js';
 
 async function getAllTypeRooms() {
     return findAll('tipoSala');

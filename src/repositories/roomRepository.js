@@ -1,5 +1,5 @@
 import prisma from "../../prismaClient.js";
-import {create, deleteById, findAll, findByField, findByUnique, update} from "./genericRepository.js";
+import {create, deleteById, findAll, findByUnique, update} from "./genericRepository.js";
 
 async function getAllRooms() {
 

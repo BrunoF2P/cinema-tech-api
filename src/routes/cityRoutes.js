@@ -4,7 +4,7 @@ import {
     validateCity,
     validateCityId,
     validateCityOP
-} from '../middlewares/validateCityMiddleware.js';
+} from '../middlewares/cityMiddleware.js';
 import { authenticateJwt, authorizeAdmin } from '../middlewares/authMiddleware.js';
 
 const router = Router();

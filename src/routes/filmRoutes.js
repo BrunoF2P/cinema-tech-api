@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import filmController from '../controllers/filmController.js';
 import { authenticateJwt, authorizeAdmin } from '../middlewares/authMiddleware.js';
-import { validateFilm, validateFilmId, validationFilmOP } from '../middlewares/validadeFilmMiddleware.js';
+import { validateFilm, validateFilmId, validationFilmOP } from '../middlewares/filmMiddleware.js';
 
 const router = Router();
 

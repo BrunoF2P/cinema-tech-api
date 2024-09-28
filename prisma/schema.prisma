@@ -104,8 +104,8 @@ model FilmeGenero {
 
 model Sala {
   id_sala      Int       @id @default(autoincrement())
-  nome_sala    String    @db.VarChar(100)
-  capacidade   Int
+  nome_sala    String    @unique @db.VarChar(100)
+  capacidade   Int       @default(0)
   tipoSala     TipoSala  @relation(fields: [id_tipo_sala], references: [id_tipo_sala])
   id_tipo_sala Int
   ativo        Boolean   @default(true)

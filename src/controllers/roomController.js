@@ -38,7 +38,7 @@ const roomController = {
     },
 
     async createRoomController(req, res) {
-        const { nome_sala, tipoSala } = req.body;
+        const { nome_sala, id_tipo_sala, ativo } = req.body;
 
         const validation = validationResult(req);
         if (!validation.isEmpty()) {
@@ -54,7 +54,8 @@ const roomController = {
 
             const newRoom = await createRoom({
                 nome_sala,
-                tipoSala: { connect: { id_tipo_sala: tipoSala } }
+                id_tipo_sala,
+                ...(ativo !== undefined && { ativo })
             });
 
             res.status(201).json({

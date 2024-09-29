@@ -88,6 +88,46 @@ components:
         Example 1:
           nome_cidade: Alagoinhas
           id_estado: 11
+    Salas:
+      type: object
+      properties:
+        nome_sala:
+          type: string
+        capacidade:
+          type: integer
+        id_tipo_sala:
+          type: integer
+        ativo:
+          type: boolean
+        cadeiras:
+          type: array
+          items:
+            type: integer
+        tipoSala:
+          type: array
+          items:
+            type: integer
+      x-examples:
+        Example 1:
+          nome_sala: 'ROOMEXEMPLO'
+          capacidade: 0
+          ativo: true
+          cadeiras:
+            id_cadeira: 1
+            linha: 'F'
+            numero: 32
+            ativo: true
+          tipoSala:
+            id_tipo_sala: 1
+            descricao: 'Normal'
+    TipoSalas:
+      type: object
+      properties:
+        descricao:
+          type: string
+      x-examples:
+        Example 1:
+          descricao: 'IMEX'
   responses:
     '200':
       description: Filme retornado com sucesso
@@ -141,6 +181,7 @@ components:
                   poster_path: 'https://meupc.net/'
                   backdrop_path: 'https://meupc.net/'
                   nota_imdb: '8.7'
+
       headers: {}
     '400':
       description: Parâmetros inválidos
@@ -203,6 +244,77 @@ components:
                   id_genero: 0
                   id_api: 0
                   nome_genero: string
+    200-Salas:
+      description: Salas retornado com sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              msg:
+                type: string
+              rooms:
+                type: object
+                properties:
+                  nome_sala:
+                    type: string
+                  capacidade:
+                    type: integer
+                  id_tipo_sala:
+                    type: integer
+                  ativo:
+                    type: boolean
+                  cadeiras:
+                    type: array
+                    items:
+                      type: integer
+                  tipoSala:
+                    type: array
+                    items:
+                      type: integer
+            x-examples:
+              Example 1:
+                nome_sala: ROOMEXEMPLO
+                capacidade: 0
+                ativo: true
+                cadeiras:
+                  id_cadeira: 1
+                  linha: F
+                  numero: 32
+                  ativo: true
+                tipoSala:
+                  id_tipo_sala: 1
+                  descricao: Normal
+    200-TipoSalas:
+      description: Tipo de salas retornado com sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              msg:
+                type: string
+              rooms:
+                type: object
+                properties:
+                  descricao:
+                    type: string
+            x-examples:
+              Example 1:
+                descricao: IMEX
+
+                examples:
+                  Example 1:
+                    value:
+                      success: true
+                      msg: string
+                      genre:
+                        id_tipo_sala: 2,
+                        descricao: "3D"
     200-Estados:
       description: Estado retornado com sucesso
       content:
@@ -1144,5 +1256,212 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       operationId: delete-cities-id
+      security:
+        - JWT: []
+  /rooms:
+    get:
+      summary: Lista todas as salas
+      tags:
+        - Gerenciar Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Salas'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-rooms
+    post:
+      summary: Criar uma nova sala
+      tags:
+        - Gerenciar Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Salas'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: post-rooms
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Salas'
+            example:
+              nome_sala: 'ROOMEXEMPLO'
+              id_tipo_sala: 1
+              ativo: true
+  '/rooms/{id}':
+    parameters:
+      - schema:
+          type: number
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Buscar salas por ID
+      tags:
+        - Gerenciar Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Salas'
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-rooms-id
+    put:
+      summary: Atualizar salas
+      tags:
+        - Gerenciar Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Salas'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: put-rooms-id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Salas'
+            example:
+              nome_sala: 'ROOMEXEMPLO'
+              id_tipo_sala: 1
+              ativo: true
+      security:
+        - JWT: []
+    delete:
+      summary: Deletar salas
+      tags:
+        - Gerenciar Salas
+      responses:
+        '200':
+          description: Sala apagada com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          description: Unauthorized
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: delete-rooms-id
+      security:
+        - JWT: []
+  /type_rooms:
+    get:
+      summary: Lista todos os tipos de salas
+      tags:
+        - Gerenciar Tipos de Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-TipoSalas'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-type-rooms
+    post:
+      summary: Criar uma nova sala
+      tags:
+        - Gerenciar Tipos de Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-TipoSalas'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: post-type-rooms
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Salas'
+            example:
+              descricao: 'IMEX'
+  '/type_rooms/{id}':
+    parameters:
+      - schema:
+          type: number
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Buscar tipos de salas por ID
+      tags:
+        - Gerenciar Tipos de Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-TipoSalas'
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-type-rooms-id
+    put:
+      summary: Atualizar tipos de salas
+      tags:
+        - Gerenciar Tipos de Salas
+      responses:
+        '200':
+          $ref: '#/components/responses/200-TipoSalas'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: put-type-rooms-id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoSalas'
+            examples: {}
+      security:
+        - JWT: []
+    delete:
+      summary: Deletar tipos de salas
+      tags:
+        - Gerenciar Tipos de Salas
+      responses:
+        '200':
+          description: Tipo de Sala apagada com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          description: Unauthorized
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: delete-type-rooms-id
       security:
         - JWT: []

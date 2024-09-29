@@ -17,7 +17,7 @@ async function getRoomById(id) {
 }
 
 async function createRoom(roomData) {
-        return create('sala', roomData);
+        return await create('sala', roomData);
 }
 
 

@@ -70,7 +70,7 @@ const roomController = {
 
     async updateRoomController(req, res) {
         const { id } = req.params;
-        const { nome_sala, tipoSala } = req.body;
+        const { nome_sala, id_tipo_sala, ativo } = req.body;
 
         const validation = validationResult(req);
         if (!validation.isEmpty()) {
@@ -94,7 +94,8 @@ const roomController = {
         try {
             const updatedRoom = await updateRoom(parseInt(id, 10), {
                 ...(nome_sala && { nome_sala }),
-                ...(tipoSala && { tipoSala: { connect: { id_tipo_sala: tipoSala } } })
+                ...(id_tipo_sala && { id_tipo_sala }),
+                ...(ativo !== undefined && { ativo })
             });
 
             res.json({

@@ -18,7 +18,7 @@
 
 * [![Node.js][Node.js]][Node-url]
 * [![Express][Express]][Express-url]
-* [![MySQL][MySQL]][MySQL-url]
+* [![Postgresql][Postgresql]][Postgresql-url]
 * [![Prisma][Prisma]][Prisma-url]
 
 
@@ -42,18 +42,19 @@
 
    Abra o arquivo `.env` e adicione as seguintes variáveis (ajuste conforme necessário):
    ```env
-   DATABASE_URL="mysql://usuario:senha@localhost:porta/banco_dados"
+   DATABASE_URL=postgres://usuario:senha@localhost:porta/banco_dados
+   SECRET=your_key
 
 ### 🔧 Instalação do MySQL
 
 Para rodar o projeto localmente, você precisará de um servidor MySQL. Existem duas opções principais:
 
 - **Instalar MySQL localmente**:
-   - Se você quiser rodar o banco de dados MySQL localmente, faça o download e a instalação a partir do site oficial: [MySQL](https://dev.mysql.com/downloads/installer/).
-   - Após a instalação, configure o MySQL para rodar no seu computador, crie um banco de dados e ajuste a variável `DATABASE_URL` no arquivo `.env` conforme necessário.
+   - Se você quiser rodar o banco de dados Postgresql localmente, faça o download e a instalação a partir do site oficial: [Postgresql](https://www.postgresql.org/download/).
+   - Após a instalação, configure o Postgresql para rodar no seu computador, crie um banco de dados e ajuste a variável `DATABASE_URL` no arquivo `.env` conforme necessário.
 
 - **Usar uma plataforma de hospedagem gratuita**:
-   - Se você preferir usar uma hospedagem gratuita de banco de dados, plataformas como [Heroku](https://www.heroku.com/), [Railway](https://railway.app/), ou [PlanetScale](https://planetscale.com/) oferecem serviços gratuitos de banco de dados MySQL.
+   - Se você preferir usar uma hospedagem gratuita de banco de dados, plataformas como [Heroku](https://www.heroku.com/), [Railway](https://railway.app/), ou [PlanetScale](https://planetscale.com/) oferecem serviços gratuitos de banco de dados Postgresql.
    - Após configurar o banco de dados em uma dessas plataformas, atualize a variável `DATABASE_URL` no seu arquivo `.env` com as credenciais fornecidas.
 ## 2. 📊 Inicialização do Banco de Dados
 
@@ -107,5 +108,5 @@ Para mais detalhes sobre a licença, consulte o arquivo [LICENSE](LICENSE.txt) n
 [Node.js]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white
 [Node-url]: https://nodejs.org/
 
-[MySQL]: https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
-[MySQL-url]: https://www.mysql.com/
+[Postgresql]: https://img.shields.io/badge/Postgress-4479A1?style=for-the-badge&logo=mysql&logoColor=white
+[Postgresql-url]: https://www.postgresql.org/

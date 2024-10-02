@@ -14,14 +14,14 @@ import sessionRoutes from "./sessionRoutes.js";
 const router = Router();
 
 router.use(userRoutes);
-router.use(stateRoutes)
+router.use(stateRoutes);
 router.use(filmRoutes);
 router.use(genreRoutes);
 router.use(cityRoutes);
 router.use(typeRoomRoutes);
 router.use(roomRoutes);
-router.use(chairRoutes)
-router.use(ticketTypeRoutes)
+router.use(chairRoutes);
+router.use(ticketTypeRoutes);
 router.use(sessionRoutes);
 
 export default router;

@@ -128,6 +128,41 @@ components:
       x-examples:
         Example 1:
           descricao: 'IMEX'
+    Cadeiras:
+      type: object
+      properties:
+        id_cadeira:
+          type: integer
+          description: O identificador único da cadeira.
+        id_sala:
+          type: integer
+          description: O identificador da sala à qual a cadeira pertence.
+        linha:
+          type: string
+          description: A linha onde a cadeira está localizada.
+          maxLength: 1
+        numero:
+          type: integer
+          description: O número da cadeira na linha.
+          minLength: 1
+          maxLength: 99
+        ativo:
+          type: boolean
+          description: Indica se a cadeira está ativa.
+          default: true
+      required:
+        - id_cadeira
+        - id_sala
+        - linha
+        - numero
+        - ativo
+      x-examples:
+        Example 1:
+          id_cadeira: 1
+          id_sala: 3
+          linha: 'F'
+          numero: 32
+          ativo: true
   responses:
     '200':
       description: Filme retornado com sucesso
@@ -384,6 +419,56 @@ components:
                     id_estado: 11
                     nome_estado: Rondônia
                     sigla_estado: RO
+    200-Cadeiras:
+      description: Cadeiras retornadas com sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Indica se a operação foi bem-sucedida.
+              msg:
+                type: string
+                description: Mensagem informativa sobre o resultado da operação.
+              chairs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id_cadeira:
+                      type: integer
+                      description: O identificador único da cadeira.
+                    id_sala:
+                      type: integer
+                      description: O identificador da sala à qual a cadeira pertence.
+                    linha:
+                      type: string
+                      description: A linha onde a cadeira está localizada.
+                      maxLength: 1
+                    numero:
+                      type: integer
+                      description: O número da cadeira na linha.
+                    ativo:
+                      type: boolean
+                      description: Indica se a cadeira está ativa.
+                      default: true
+                x-examples:
+                  Example 1:
+                    success: true
+                    msg: "Cadeiras processadas com sucesso"
+                    chairs:
+                      - id_cadeira: 1
+                        id_sala: 3
+                        linha: 'F'
+                        numero: 32
+                        ativo: true
+                      - id_cadeira: 2
+                        id_sala: 3
+                        linha: 'B'
+                        numero: 10
+                        ativo: true
 paths:
   /register:
     post:
@@ -1463,5 +1548,178 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       operationId: delete-type-rooms-id
+      security:
+        - JWT: []
+  '/chairs/{id_sala}':
+    get:
+      summary: Lista todas as cadeiras de uma sala
+      tags:
+        - Gerenciar Cadeiras
+      parameters:
+        - name: id_sala
+          in: path
+          required: true
+          description: O ID da sala para listar as cadeiras.
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cadeiras'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-chairs-by-room
+
+  '/rooms/{id_sala}/chairs':
+    post:
+      summary: Adicionar novas cadeiras
+      tags:
+        - Gerenciar Cadeiras
+      parameters:
+        - name: id_sala
+          in: path
+          required: true
+          description: O ID da sala para cadastrar as cadeiras.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_sala:
+                  type: integer
+                  description: O ID da sala onde as cadeiras serão adicionadas.
+                cadeiras:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      linha:
+                        type: string
+                        description: A linha onde a cadeira está localizada.
+                        maxLength: 1
+                      numero:
+                        type: integer
+                        description: O número da cadeira na linha.
+              required:
+                - id_sala
+                - cadeiras
+            example:
+                - linha: 'A'
+                  numero: 1
+                - linha: 'A'
+                  numero: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cadeiras'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: post-chairs
+      security:
+        - JWT: []
+
+  /rooms/{id_sala}/chairs/{id_cadeira}:
+    parameters:
+      - name: id_sala
+        in: path
+        required: true
+        description: O ID da sala a selecionada.
+        schema:
+          type: integer
+      - name: id_cadeira
+        in: path
+        required: true
+        description: O ID da cadeira que pretende buscar.
+        schema:
+          type: integer
+    get:
+      summary: Buscar cadeira por ID
+      tags:
+        - Gerenciar Cadeiras
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cadeiras'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-chair-by-id
+
+  /chairs/{id_cadeira}:
+    parameters:
+      - name: id_cadeira
+        in: path
+        required: true
+        description: O ID da cadeira a ser atualizada ou deletada.
+        schema:
+          type: integer
+    put:
+      summary: Atualizar informações da cadeira
+      tags:
+        - Gerenciar Cadeiras
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                linha:
+                  type: string
+                  description: A nova linha onde a cadeira está localizada.
+                  maxLength: 1
+                numero:
+                  type: integer
+                  description: O novo número da cadeira na linha.
+                ativo:
+                  type: boolean
+                  description: Define se a cadeira está ativa ou não.
+            example:
+
+              ativo: true
+      responses:
+        '200':
+          $ref: '#/components/responses/200-Cadeiras'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: put-chair
+      security:
+        - JWT: []
+
+
+    delete:
+      summary: Deletar cadeira por ID
+      tags:
+        - Gerenciar Cadeiras
+      responses:
+        '200':
+          description: Cadeira deletada com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          description: Unauthorized
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: delete-chair
       security:
         - JWT: []

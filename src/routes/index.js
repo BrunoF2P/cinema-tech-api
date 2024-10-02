@@ -7,6 +7,7 @@ import stateRoutes from "./stateRoutes.js";
 import cityRoutes from "./cityRoutes.js";
 import typeRoomRoutes from "./typeRoomRoutes.js";
 import roomRoutes from "./roomRoutes.js";
+import chairRoutes from "./chairRoutes.js";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use('/', genreRoutes);
 router.use('/', cityRoutes);
 router.use('/', typeRoomRoutes);
 router.use('/', roomRoutes);
+router.use('/', chairRoutes)
 
 export default router;

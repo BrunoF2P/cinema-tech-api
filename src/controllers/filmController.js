@@ -146,7 +146,6 @@ const filmController = {
         const limit = parseInt(req.query.limit) || 10;
 
         if (isNaN(ageRating) || ageRating < 1) {
-            console.log(ageRating)
             return res.status(400).json({ erro: 'Faixa etária inválida' });
         }
 

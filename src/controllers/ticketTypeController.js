@@ -40,7 +40,7 @@ const ticketTypeController = {
 
             if (!ticketType) return res.status(404).json({ success: false, msg: 'Tipo de ingresso não encontrado' });
 
-            res.json({ success: true, msg: 'Tipo de ingrsso encontrado com sucesso', ticketType });
+            res.json({ success: true, msg: 'Tipo de ingresso encontrado com sucesso', ticketType });
 
         } catch (error) {
             res.status(500).json({ success: false, msg: 'Falha ao buscar o tipo de ingresso' });
@@ -58,7 +58,9 @@ const ticketTypeController = {
                 return res.status(404).json({ success: false, msg: 'Tipo de ingresso não encontrado' });
             }
 
-            const updatedTicketType = await updateTicketType(parseInt(id_tipo), { descricao });
+            const updatedTicketType = await updateTicketType(parseInt(id_tipo), {
+                ...(descricao && {descricao})
+            });
 
             res.json({success: true, msg: 'Tipo de ingresso atualizado com sucesso', typeRoom: updatedTicketType});
         } catch (error) {

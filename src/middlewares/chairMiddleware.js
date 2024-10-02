@@ -3,7 +3,7 @@ import {validateErrors} from "./genericMiddleware.js";
 
 function validationChairOP(isOptional) {
     return [
-        param('*.id_sala')
+        param('id_sala')
             .optional(isOptional)
             .isInt({min: 1})
             .withMessage('O ID da sala deve ser um número inteiro positivo.'),

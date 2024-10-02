@@ -184,6 +184,58 @@ components:
       x-examples:
         Example 1:
           descricao: "Inteira"
+    Sessao:
+      type: object
+      properties:
+        id_sessao:
+          type: integer
+          example: 1
+          description: "Identificador único da sessão."
+        id_filme:
+          type: integer
+          example: 1
+          description: "ID do filme associado à sessão."
+        id_sala:
+          type: integer
+          example: 1
+          description: "ID da sala onde a sessão será realizada."
+        data_sessao:
+          type: string
+          format: date-time
+          example: "2024-10-03T18:00:00Z"
+          description: "Data e hora da sessão."
+        filme:
+          type: array
+          example:
+            "id_filme": 1
+            "titulo": "Filme diferente"
+          description: "Filme selecionado"
+        sala:
+          type: array
+          example:
+            "id_sala": 1
+            "nome_sala": "GBD2"
+            "capacidade": 50
+            "id_tipo_sala": 3
+          description: "Sala da sessao"
+        reservas:
+          type: array
+          description: "Lista de reservas associadas à sessão."
+        Ingresso:
+          type: array
+          description: "Lista de ingressos associados à sessão."
+        PrecoIngresso:
+          type: array
+          description: "Lista de preços de ingressos associados à sessão."
+      required:
+        - id_filme
+        - id_sala
+        - data_sessao
+      x-examples:
+        Example 1:
+          id_filme: 1
+          id_sala: 1
+          data_sessao: "2024-10-03T18:00:00Z"
   responses:
     '200':
       description: Filme retornado com sucesso
@@ -1760,7 +1812,7 @@ paths:
                 value:
                   descricao: "Inteira"
       responses:
-        201:
+        200:
           description: Tipo de ingresso criado com sucesso
           content:
             application/json:
@@ -1872,6 +1924,212 @@ paths:
       responses:
         204:
           description: Tipo de ingresso removido com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /sessions:
+    post:
+      summary: Criar uma nova sessão de filme
+      tags:
+        - Gerenciar Sessões
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sessao'
+            examples:
+              Example 1:
+                value:
+                  id_filme: 1
+                  id_sala: 1
+                  data_sessao: "2024-10-03T18:00:00Z"
+      responses:
+        200:
+          description: Sessão criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Obter todas as sessões
+      tags:
+        - Gerenciar Sessões
+      responses:
+        200:
+          description: Lista de todas as sessões recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /sessions/{id_sessao}:
+    get:
+      summary: Obter uma sessão
+      tags:
+        - Gerenciar Sessões
+      parameters:
+        - name: id_sessao
+          in: path
+          required: true
+          description: ID da sessao a ser recuperada
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Sessão encontrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    put:
+      summary: Atualizar uma sessao
+      tags:
+        - Gerenciar Sessões
+      parameters:
+        - name: id_sessao
+          in: path
+          required: true
+          description: ID da sessao a ser atualizada
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sessao'
+            examples:
+              Example 1:
+                value:
+                  id_filme: 1
+                  id_sala: 1
+                  data_sessao: "2024-10-03T18:00:00Z"
+      responses:
+        200:
+          description: Sessão atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    delete:
+      summary: Remover uma sessão existente
+      tags:
+        - Gerenciar Sessões
+      parameters:
+        - name: id_sessao
+          in: path
+          required: true
+          description: ID da sessao a ser removida
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Sessão removida com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /sessions/movie/{id_filme}:
+    get:
+      summary: Obter sessões por filme
+      tags:
+        - Gerenciar Sessões
+      parameters:
+        - name: id_filme
+          in: path
+          required: true
+          description: ID do filme a ser recuperado
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Sessão encontrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /sessions/date-range:
+    get:
+      summary: Obter sessões por filme
+      tags:
+        - Gerenciar Sessões
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          description: Data inicial da pesquisa
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          required: true
+          description: Data final da pesquisa
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Sessões encontrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sessao'
         '400':
           $ref: '#/components/responses/400'
         '401':

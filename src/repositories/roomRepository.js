@@ -1,5 +1,5 @@
-import prisma from "../../prismaClient.js";
 import {create, deleteById, findAll, findByUnique, update} from "./genericRepository.js";
+import {createChair, deleteChair, getChairById} from "./chairRepository.js";
 
 async function getAllRooms() {
 
@@ -30,26 +30,48 @@ async function deleteRoom(id) {
 }
 
 async function getRoomByName(name) {
-    return findByUnique('sala', 'nome_sala', name);
+    return  findByUnique('sala', 'nome_sala', name);
 }
 
-async function addChairToRoom(id_sala, chairData) {
-    const room = await getRoomById(id_sala);
+async function addChairToRoom(id_sala, linha, numero) {
+    const room = await findByUnique('sala','id_sala', id_sala);
 
     if (!room) {
-        throw new Error("Sala não encontrada");
+        throw new Error('Sala não encontrada');
     }
 
-    const newChair = await prisma.cadeira.create({
-        data: {
-            ...chairData,
-            id_sala: id_sala,
+    // Cria a nova cadeira
+    const newChair = await createChair({
+            id_sala,
+            linha,
+            numero,
+    });
+
+    // Atualiza a capacidade da sala
+    const updatedRoom = await update('sala', 'id_sala', id_sala, {
+        capacidade: {
+            increment: 1, // Incrementa a capacidade em 1
         },
     });
 
-    await updateRoom(id_sala, { capacidade: room.cadeiras.length + 1 });
+    return { updatedRoom, newChair };
+}
+async function removeChairFromRoom(id_cadeira) {
+    const chair = await getChairById(id_cadeira);
 
-    return newChair;
+    if (!chair) {
+        throw new Error('Cadeira não encontrada.');
+    }
+
+    await deleteChair(id_cadeira);
+
+    const updatedRoom = await update('sala', 'id_sala', chair.id_sala, {
+        capacidade: {
+            decrement: 1,
+        },
+    });
+
+    return updatedRoom;
 }
 
-export { getAllRooms, getRoomById, createRoom, updateRoom, deleteRoom, getRoomByName, addChairToRoom };
+export { getAllRooms, getRoomById, createRoom, updateRoom, deleteRoom, getRoomByName, addChairToRoom, removeChairFromRoom };

@@ -34,6 +34,12 @@ const chairController = {
                 return null;
             }));
 
+            const errors = existingChairs.filter(result => result !== null);
+
+            if (errors.length > 0) {
+                return res.status(400).json({ success: false, errors });
+            }
+
             const results = await Promise.all(chairs.map(async (chair) => {
                 const {linha, numero} = chair;
                 return await addChairToRoom(parseInt(id_sala), linha, numero);

@@ -1470,7 +1470,7 @@ paths:
       operationId: delete-rooms-id
       security:
         - JWT: []
-  /type_rooms:
+  /room-type:
     get:
       summary: Lista todos os tipos de salas
       tags:
@@ -1506,11 +1506,11 @@ paths:
               $ref: '#/components/schemas/Salas'
             example:
               descricao: 'IMEX'
-  '/type_rooms/{id}':
+  '/room-type/{id_tipo_sala}':
     parameters:
       - schema:
           type: number
-        name: id
+        name: id_tipo_sala
         in: path
         required: true
     get:

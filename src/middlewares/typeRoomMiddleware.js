@@ -1,37 +1,30 @@
-import { check, validationResult } from 'express-validator';
+import {body, param} from 'express-validator';
+import {validateErrors} from "./genericMiddleware.js";
+import {getTypeRoomByDescription} from "../repositories/typeRoomRepository.js";
 
 
 function validateTypeRoomOP(isOptional) {
     return [
-        check('descricao')
+        body('descricao')
             .optional(isOptional)
             .notEmpty().withMessage('Descricao do tipe de sala é obrigatório')
-            .isLength({ min: 1 }).withMessage('Descricao do tipe de sala  deve ter pelo menos 1 caractere')
+            .isLength({min: 1}).withMessage('Descricao do tipe de sala  deve ter pelo menos 1 caractere')
             .isString().withMessage('Descricao do tipe de sala deve ser um texto')
+            .custom(async (descricao) => {
+                const existingItem = await getTypeRoomByDescription(descricao);
+                if (existingItem) {
+                    return Promise.reject('Descrição já existe.');
+                }
+            }),
+        validateErrors
     ];
 }
 
-async function validateTypeRoom(req, res, next) {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ erro: errors.array() });
-    }
-
-    next();
-}
-
 const validateTypeRoomId = [
-    check('id')
-        .isInt({ gt: 0 })
+    param('id_tipo_sala')
+        .isInt({gt: 0})
         .withMessage('ID deve ser um número positivo'),
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ erro: errors.array() });
-        }
-        next();
-    }
+    validateErrors
 ];
 
-export {validateTypeRoom, validateTypeRoomId, validateTypeRoomOP };
+export {validateTypeRoomId, validateTypeRoomOP};

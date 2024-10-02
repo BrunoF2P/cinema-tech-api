@@ -44,7 +44,7 @@ async function findByField(model, fieldName, fieldValue, include = null) {
     const where = {};
     where[fieldName] = fieldValue;
     return prisma[model].findMany({
-        equals: where,
+        where,
         ...(include && { include }),
     });
 }

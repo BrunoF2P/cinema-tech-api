@@ -49,4 +49,11 @@ async function findByField(model, fieldName, fieldValue, include = null) {
     });
 }
 
-export { findAll, findByUnique, create, update, deleteById, findByField };
+async function checkField(model, where, include = null) {
+    return prisma[model].findMany({
+        where,
+        ...(include && { include }),
+    });
+}
+
+export { findAll, findByUnique, create, update, deleteById, findByField, checkField };

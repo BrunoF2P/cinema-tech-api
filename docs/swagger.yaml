@@ -163,6 +163,27 @@ components:
           linha: 'F'
           numero: 32
           ativo: true
+    TipoIngresso:
+      type: object
+      properties:
+        id_tipo:
+          type: integer
+          description: Identificador único do tipo de ingresso
+          example: 1
+        descricao:
+          type: string
+          description: Descrição do tipo de ingresso
+          example: "Ingresso Normal"
+        ingressos:
+          type: array
+        PrecoIngresso:
+          type: array
+      required:
+        - id_tipo
+        - descricao
+      x-examples:
+        Example 1:
+          descricao: "Inteira"
   responses:
     '200':
       description: Filme retornado com sucesso
@@ -1704,7 +1725,6 @@ paths:
       security:
         - JWT: []
 
-
     delete:
       summary: Deletar cadeira por ID
       tags:
@@ -1723,3 +1743,140 @@ paths:
       operationId: delete-chair
       security:
         - JWT: []
+
+  /ticket-type:
+    post:
+      summary: Criar um novo tipo de ingresso
+      tags:
+        - Gerenciar Tipos de ingresso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoIngresso'
+            examples:
+              Example 1:
+                value:
+                  descricao: "Inteira"
+      responses:
+        201:
+          description: Tipo de ingresso criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+    get:
+      summary: Obter todos os tipos de ingresso
+      tags:
+        - Gerenciar Tipos de ingresso
+      responses:
+        200:
+          description: Lista de tipos de ingresso recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TipoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /ticket-type/{id_tipo}:
+    get:
+      summary: Obter um tipo de ingresso
+      tags:
+        - Gerenciar Tipos de ingresso
+      parameters:
+        - name: id_tipo
+          in: path
+          required: true
+          description: ID do tipo de ingresso a ser recuperado
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Tipo de ingresso recuperado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    put:
+      summary: Atualizar um tipo de ingresso existente
+      tags:
+        - Gerenciar Tipos de ingresso
+      parameters:
+        - name: id_tipo
+          in: path
+          required: true
+          description: ID do tipo de ingresso a ser atualizado
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoIngresso'
+            examples:
+              Example 1:
+                value:
+                  descricao: "Inteira"
+      responses:
+        200:
+          description: Tipo de ingresso atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    delete:
+      summary: Remover um tipo de ingresso existente
+      tags:
+        - Gerenciar Tipos de ingresso
+      parameters:
+        - name: id_tipo
+          in: path
+          required: true
+          description: ID do tipo de ingresso a ser removido
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Tipo de ingresso removido com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'

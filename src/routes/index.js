@@ -8,16 +8,19 @@ import cityRoutes from "./cityRoutes.js";
 import typeRoomRoutes from "./typeRoomRoutes.js";
 import roomRoutes from "./roomRoutes.js";
 import chairRoutes from "./chairRoutes.js";
+import ticketTypeRoutes from "./ticketTypeRoutes.js";
 
 const router = Router();
 
-router.use('/', userRoutes);
-router.use('/', stateRoutes)
-router.use('/', filmRoutes);
-router.use('/', genreRoutes);
-router.use('/', cityRoutes);
-router.use('/', typeRoomRoutes);
-router.use('/', roomRoutes);
-router.use('/', chairRoutes)
+router.use(userRoutes);
+router.use(stateRoutes)
+router.use(filmRoutes);
+router.use(genreRoutes);
+router.use(cityRoutes);
+router.use(typeRoomRoutes);
+router.use(roomRoutes);
+router.use(chairRoutes)
+router.use(ticketTypeRoutes)
 
 export default router;
+

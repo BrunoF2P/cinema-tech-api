@@ -133,6 +133,7 @@ model Cadeira {
   Ingresso   Ingresso[]
 
   @@map("cadeiras")
+  @@unique([id_sala, linha, numero])
 }
 
 model Sessao {

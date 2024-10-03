@@ -227,6 +227,8 @@ components:
         PrecoIngresso:
           type: array
           description: "Lista de preços de ingressos associados à sessão."
+          items:
+            $ref: '#/components/schemas/PrecoIngresso'
       required:
         - id_filme
         - id_sala
@@ -236,6 +238,35 @@ components:
           id_filme: 1
           id_sala: 1
           data_sessao: "2024-10-03T18:00:00Z"
+    PrecoIngresso:
+      type: object
+      properties:
+        id_preco:
+          type: integer
+          description: O identificador único do preço do ingresso.
+        id_sessao:
+          type: integer
+          description: O identificador da sessão à qual o preço do ingresso pertence.
+        id_tipo:
+          type: integer
+          description: O identificador do tipo de ingresso associado a este preço.
+        preco:
+          type: string
+          description: O valor do preço do ingresso.
+          example: "30.00"
+      required:
+        - id_sessao
+        - id_tipo
+        - preco
+      x-examples:
+        Example 1:
+          id_sessao: 4
+          id_tipo: 1
+          preco: "30.00"
+        Example 2:
+          id_sessao: 4
+          id_tipo: 2
+          preco: "15.00"
   responses:
     '200':
       description: Filme retornado com sucesso
@@ -2142,6 +2173,164 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /ticket-price:
+    post:
+      summary: Criar um novo preço de ingresso
+      tags:
+        - Gerenciar Preços de Ingressos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrecoIngresso'
+            examples:
+              Example 1:
+                value:
+                  id_sessao: 4
+                  id_tipo: 1
+                  preco: "30.00"
+      security:
+        - JWT: [ ]
+      responses:
+        200:
+          description: Preço de ingresso criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrecoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+    get:
+      summary: Obter todos os preços de ingresso
+      tags:
+        - Gerenciar Preços de Ingressos
+      responses:
+        200:
+          description: Lista de preços de ingressos recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrecoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /ticket-price/{id_preco}:
+    get:
+      summary: Obter um preço de ingresso
+      tags:
+        - Gerenciar Preços de Ingressos
+      parameters:
+        - name: id_preco
+          in: path
+          required: true
+          description: ID do preço de ingresso a ser recuperado
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Preço de ingresso recuperado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrecoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    delete:
+      summary: Remover um preço de ingresso existente
+      tags:
+        - Gerenciar Preços de Ingressos
+      parameters:
+        - name: id_preco
+          in: path
+          required: true
+          description: ID do preço de ingresso a ser removido
+          schema:
+            type: integer
+      security:
+        - JWT: [ ]
+      responses:
+        204:
+          description: Preço de ingresso removido com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /ticket-price/{id_preco}/session/{id_sessao}/ticket-type/{id_tipo}:
+    put:
+      summary: Atualizar um preço de ingresso existente
+      tags:
+        - Gerenciar Preços de Ingressos
+      parameters:
+        - name: id_preco
+          in: path
+          required: true
+          description: ID do preço de ingresso a ser atualizado
+          schema:
+            type: integer
+        - name: id_sessao
+          in: path
+          required: true
+          description: ID da sessão associada ao preço de ingresso
+          schema:
+            type: integer
+        - name: id_tipo
+          in: path
+          required: true
+          description: ID do tipo de ingresso associado
+          schema:
+            type: integer
+      security:
+        - JWT: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrecoIngresso'
+            examples:
+              Example 1:
+                value:
+                  preco: "30.00"
+      responses:
+        200:
+          description: Preço de ingresso atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrecoIngresso'
         '400':
           $ref: '#/components/responses/400'
         '401':

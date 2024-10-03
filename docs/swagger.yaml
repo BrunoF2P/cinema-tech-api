@@ -1811,6 +1811,8 @@ paths:
               Example 1:
                 value:
                   descricao: "Inteira"
+      security:
+        - JWT: [ ]
       responses:
         200:
           description: Tipo de ingresso criado com sucesso
@@ -1894,6 +1896,8 @@ paths:
               Example 1:
                 value:
                   descricao: "Inteira"
+      security:
+        - JWT: [ ]
       responses:
         200:
           description: Tipo de ingresso atualizado com sucesso
@@ -1921,6 +1925,8 @@ paths:
           description: ID do tipo de ingresso a ser removido
           schema:
             type: integer
+      security:
+        - JWT: [ ]
       responses:
         204:
           description: Tipo de ingresso removido com sucesso
@@ -1950,6 +1956,8 @@ paths:
                   id_filme: 1
                   id_sala: 1
                   data_sessao: "2024-10-03T18:00:00Z"
+      security:
+        - JWT: [ ]
       responses:
         200:
           description: Sessão criada com sucesso
@@ -2036,6 +2044,8 @@ paths:
                   id_filme: 1
                   id_sala: 1
                   data_sessao: "2024-10-03T18:00:00Z"
+      security:
+        - JWT: [ ]
       responses:
         200:
           description: Sessão atualizada com sucesso
@@ -2063,6 +2073,8 @@ paths:
           description: ID da sessao a ser removida
           schema:
             type: integer
+      security:
+        - JWT: [ ]
       responses:
         204:
           description: Sessão removida com sucesso

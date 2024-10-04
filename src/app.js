@@ -23,7 +23,7 @@ const swaggerDocument = YAML.load('docs/swagger.yaml');
 swaggerDocument.servers[0].url = `${process.env.SERVER_URL}/v1`;
 
 // Configurando middlewares
-app.use(logger('dev'));
+app.use(logger(process.env.MODE_SYS));
 app.use(cors());
 app.use(cookieParser());
 app.use(passport.initialize());

@@ -124,24 +124,26 @@ model TipoSala {
 }
 
 model Cadeira {
-  id_cadeira Int        @id @default(autoincrement())
-  sala       Sala       @relation(fields: [id_sala], references: [id_sala], onDelete: Cascade)
-  id_sala    Int
-  linha      String     @db.Char(1)
-  numero     Int
-  ativo      Boolean    @default(true)
-  Ingresso   Ingresso[]
+  id_cadeira     Int              @id @default(autoincrement())
+  sala           Sala             @relation(fields: [id_sala], references: [id_sala], onDelete: Cascade)
+  id_sala        Int
+  linha          String           @db.Char(1)
+  numero         Int
+  ativo          Boolean          @default(true)
+  Ingresso       Ingresso[]
+  ReservaCadeira ReservaCadeira[]
 
   @@map("cadeiras")
   @@unique([id_sala, linha, numero])
 }
 
 model Sessao {
-  id_sessao     Int             @id @default(autoincrement())
-  filme         Filme           @relation(fields: [id_filme], references: [id_filme])
-  id_filme      Int
-  sala          Sala            @relation(fields: [id_sala], references: [id_sala])
-  id_sala       Int
+  id_sessao Int   @id @default(autoincrement())
+  filme     Filme @relation(fields: [id_filme], references: [id_filme])
+  id_filme  Int
+  sala      Sala  @relation(fields: [id_sala], references: [id_sala])
+  id_sala   Int
+
   data_sessao   DateTime
   reservas      Reserva[]
   Ingresso      Ingresso[]
@@ -151,16 +153,31 @@ model Sessao {
 }
 
 model Reserva {
-  id_reserva   Int         @id @default(autoincrement())
-  usuario      Usuario     @relation(fields: [id_usuario], references: [id_usuario])
+  id_reserva   Int              @id @default(autoincrement())
+  usuario      Usuario          @relation(fields: [id_usuario], references: [id_usuario])
   id_usuario   Int
-  sessao       Sessao      @relation(fields: [id_sessao], references: [id_sessao])
+  sessao       Sessao           @relation(fields: [id_sessao], references: [id_sessao])
   id_sessao    Int
-  data_reserva DateTime    @default(now()) @db.Timestamp
-  status       Status      @default(pendente)
-  Pagamento    Pagamento[]
+  data_reserva DateTime         @default(now()) @db.Timestamp
+  status       Status           @default(pendente)
+  total        Decimal          @db.Decimal(10, 2)
+  transacao_id String?
+  Cadeiras     ReservaCadeira[]
 
   @@map("reservas")
+}
+
+model ReservaCadeira {
+  id_reserva       Int
+  id_cadeira       Int
+  id_tipo_ingresso Int
+
+  reserva      Reserva      @relation(fields: [id_reserva], references: [id_reserva], onDelete: Cascade)
+  cadeira      Cadeira      @relation(fields: [id_cadeira], references: [id_cadeira])
+  tipoIngresso TipoIngresso @relation(fields: [id_tipo_ingresso], references: [id_tipo])
+
+  @@id([id_reserva, id_cadeira])
+  @@map("reservas_cadeiras")
 }
 
 enum Status {
@@ -185,10 +202,11 @@ model Ingresso {
 }
 
 model TipoIngresso {
-  id_tipo       Int             @id @default(autoincrement())
-  descricao     String          @unique @db.VarChar(50)
-  ingressos     Ingresso[]
-  PrecoIngresso PrecoIngresso[]
+  id_tipo        Int              @id @default(autoincrement())
+  descricao      String           @unique @db.VarChar(50)
+  ingressos      Ingresso[]
+  PrecoIngresso  PrecoIngresso[]
+  ReservaCadeira ReservaCadeira[]
 
   @@map("tipos_ingressos")
 }
@@ -202,30 +220,4 @@ model PrecoIngresso {
   preco     Decimal      @db.Decimal(10, 2)
 
   @@map("precos_ingressos")
-}
-
-model Pagamento {
-  id_pagamento     Int             @id @default(autoincrement())
-  reserva          Reserva         @relation(fields: [id_reserva], references: [id_reserva])
-  id_reserva       Int
-  valor_total      Decimal         @db.Decimal(10, 2)
-  metodo_pagamento MetodoPagamento
-  status           StatusPagamento @default(pendente)
-  data_pagamento   DateTime        @default(now()) @db.Timestamp
-  id_transacao_api String?         @db.VarChar(255)
-
-  @@map("pagamentos")
-}
-
-enum MetodoPagamento {
-  credito
-  debito
-  pix
-  dinheiro
-}
-
-enum StatusPagamento {
-  pendente
-  confirmado
-  cancelado
 }

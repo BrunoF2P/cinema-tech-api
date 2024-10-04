@@ -44,6 +44,7 @@
    ```env
    DATABASE_URL=postgres://usuario:senha@localhost:porta/banco_dados
    SECRET=your_key
+   MODE_SYS=dev or prod
 
 ### 🔧 Instalação do MySQL
 
@@ -54,8 +55,8 @@ Para rodar o projeto localmente, você precisará de um servidor MySQL. Existem 
    - Após a instalação, configure o Postgresql para rodar no seu computador, crie um banco de dados e ajuste a variável `DATABASE_URL` no arquivo `.env` conforme necessário.
 
 - **Usar uma plataforma de hospedagem gratuita**:
-   - Se você preferir usar uma hospedagem gratuita de banco de dados, plataformas como [Heroku](https://www.heroku.com/), [Railway](https://railway.app/), ou [PlanetScale](https://planetscale.com/) oferecem serviços gratuitos de banco de dados Postgresql.
-   - Após configurar o banco de dados em uma dessas plataformas, atualize a variável `DATABASE_URL` no seu arquivo `.env` com as credenciais fornecidas.
+   - Se você preferir usar uma hospedagem gratuita de banco de dados, plataformas como [Railway](https://railway.app/), ou [PlanetScale](https://planetscale.com/) oferecem serviços gratuitos de banco de dados Postgresql.
+   - Após configurar o banco de dados em uma dessas plataformas, atualize a variável `DATABASE_URL` no seu arquivo `.env` com as credenciais fornecidas e adicione `SECRET_URL` com a url do site caso esteja hospedando .
 ## 2. 📊 Inicialização do Banco de Dados
 
 Para configurar e inicializar o banco de dados para o projeto, siga os passos abaixo:

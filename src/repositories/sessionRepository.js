@@ -26,49 +26,105 @@ async function getAllSession(){
 }
 
 async function getSessionById(id) {
-    return await findByUnique('sessao', 'id_sessao', id, {
-
-            filme: {
-                select: {
-                    id_filme: true,
-                    titulo: true,
-                    sinopse: true,
-                    data_lancamento: true,
-                    duracao: true,
-                    classificacao_etaria: true,
-                    poster_path: true,
-                    nota_imdb: true
-                }
-            },
-            sala: {
-                select: {
-                    id_sala: true,
-                    nome_sala: true,
-                    capacidade: true,
-                    ativo: true,
-                    id_tipo_sala: true,
-                    tipoSala: {
-                        select: {
-                            descricao: true
-                        }
+    const session = await findByUnique('sessao', 'id_sessao', id, {
+        filme: {
+            select: {
+                id_filme: true,
+                titulo: true,
+                sinopse: true,
+                data_lancamento: true,
+                duracao: true,
+                classificacao_etaria: true,
+                poster_path: true,
+                nota_imdb: true
+            }
+        },
+        sala: {
+            select: {
+                id_sala: true,
+                nome_sala: true,
+                capacidade: true,
+                ativo: true,
+                tipoSala: {
+                    select: {
+                        descricao: true
                     }
                 }
+            }
+        },
+        PrecoIngresso: {
+            select: {
+                id_preco: true,
+                preco: true,
+                tipo: {
+                    select: {
+                        descricao: true
+                    }
+                }
+            }
+        },
+        reservas: {
+            where: {
+                status: {
+                    in: ['pendente', 'confirmado']
+                }
             },
-            PrecoIngresso: {
-                select: {
-                    id_preco: true,
-                    preco: true,
-                    id_tipo: true,
-                    tipo: {
-                        select: {
-                            descricao: true
+            select: {
+                Cadeiras: {
+                    select: {
+                        cadeira: {
+                            select: {
+                                id_cadeira: true, // Inclui o id_cadeira
+                                linha: true,
+                                numero: true
+                            }
                         }
                     }
                 }
             }
         }
+    });
+
+    // Formatação da resposta
+    const cadeirasReservadas = session.reservas.flatMap(reserva =>
+        reserva.Cadeiras.map(cadeira => ({
+            id_cadeira: cadeira.cadeira.id_cadeira,
+            linha: cadeira.cadeira.linha,
+            numero: cadeira.cadeira.numero,
+        }))
     );
+
+    return {
+            id: session.id_sessao,
+            filme: {
+                id: session.filme.id_filme,
+                titulo: session.filme.titulo,
+                sinopse: session.filme.sinopse,
+                data_lancamento: session.filme.data_lancamento,
+                duracao: session.filme.duracao,
+                classificacao_etaria: session.filme.classificacao_etaria,
+                poster: session.filme.poster_path,
+                nota_imdb: session.filme.nota_imdb,
+            },
+            sala: {
+                id: session.sala.id_sala,
+                nome: session.sala.nome_sala,
+                capacidade: session.sala.capacidade,
+                ativo: session.sala.ativo,
+                tipo: {
+                    descricao: session.sala.tipoSala.descricao
+                }
+            },
+            precos: session.PrecoIngresso.map(preco => ({
+                id: preco.id_preco,
+                valor: preco.preco,
+                tipo: preco.tipo.descricao
+            })),
+            cadeirasReservadas,
+            data_sessao: session.data_sessao // Mantenha isso caso precise da data da sessão
+    };
 }
+
 
 
 async function getSessionByMovieId(id) {

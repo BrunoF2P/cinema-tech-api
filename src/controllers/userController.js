@@ -68,6 +68,12 @@ async function registerUser(req, res) {
             algorithm: config.algorithm,
         });
 
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.MODE_SYS === 'prod',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000
+        });
         res.json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
 
     } catch (err) {
@@ -110,6 +116,14 @@ async function loginUser(req, res) {
             expiresIn: config.expiresIn,
             algorithm: config.algorithm,
         });
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.MODE_SYS === 'prod',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
 
         res.json({ success: true, msg: 'Login bem-sucedido', token });
     } catch (err) {

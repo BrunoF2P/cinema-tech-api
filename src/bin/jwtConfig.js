@@ -5,7 +5,7 @@ dotenv.config();
 export function jwtConfig() {
     return {
         secret: process.env.SECRET,
-        expiresIn: '1h',
+        expiresIn: '1D',
         algorithm: 'HS256'
     };
 }

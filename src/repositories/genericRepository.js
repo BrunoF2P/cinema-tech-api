@@ -55,5 +55,12 @@ async function checkField(model, where, include = null) {
         ...(include && { include }),
     });
 }
+async function checkFieldUnique(model, where, include = null) {
+    return prisma[model].findUnique({
+        where,
+        include,
+    });
+}
 
-export { findAll, findByUnique, create, update, deleteById, findByField, checkField };
+
+export { findAll, findByUnique, create, update, deleteById, findByField, checkField, checkFieldUnique };

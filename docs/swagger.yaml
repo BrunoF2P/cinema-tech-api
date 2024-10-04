@@ -267,6 +267,67 @@ components:
           id_sessao: 4
           id_tipo: 2
           preco: "15.00"
+
+    Reserva:
+      type: object
+      properties:
+        id_reserva:
+          type: integer
+          description: O identificador único da reserva.
+        id_usuario:
+          type: integer
+          description: O identificador do usuário que fez a reserva.
+        id_sessao:
+          type: integer
+          description: O identificador da sessão para a qual a reserva foi feita.
+        data_reserva:
+          type: string
+          format: date-time
+          description: A data e hora em que a reserva foi realizada.
+        data_expiracao:
+          type: string
+          format: date-time
+          description: A data e hora em que a reserva expira.
+        status:
+          type: string
+          description:
+            O status da reserva (ex: pendente, confirmado, cancelado).
+          enum: [ pendente, confirmado, cancelado ]
+        total:
+          type: number
+          format: decimal
+          description: O valor total da reserva.
+        transacao_id:
+          type: string
+          description: O identificador da transação associada à reserva.
+        Cadeiras:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cadeiras'  # Refere-se ao schema Cadeiras
+      required:
+        - id_reserva
+        - id_usuario
+        - id_sessao
+        - data_reserva
+        - data_expiracao
+        - status
+        - total
+      x-examples:
+        Example 1:
+          id_reserva: 1
+          id_usuario: 2
+          id_sessao: 3
+          data_reserva: '2024-10-03T22:56:12Z'
+          data_expiracao: '2024-10-04T22:56:12Z'
+          status: 'confirmado'
+          total: 45.00
+          transacao_id: '25'
+          Cadeiras:
+            - id_cadeira: 1
+              id_sala: 3
+              linha: 'F'
+              numero: 32
+              ativo: true
   responses:
     '200':
       description: Filme retornado com sucesso
@@ -2331,6 +2392,288 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PrecoIngresso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  '/bookings':
+    post:
+      summary: Criar uma nova reserva
+      tags:
+        - Gerenciar Reservas
+      security:
+        - JWT: []  # Esquema de segurança JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_sessao:
+                  type: integer
+                  description: ID da sessão para a qual a reserva está sendo feita
+                Cadeiras:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id_cadeira:
+                        type: integer
+                        description: ID da cadeira que está sendo reservada
+                      id_tipo_ingresso:
+                        type: integer
+                        description: ID do tipo de ingresso para a cadeira
+                  description: Lista de cadeiras a serem reservadas
+              required:
+                - id_usuario
+                - id_sessao
+                - Cadeiras
+      responses:
+        201:
+          description: Reserva criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  msg:
+                    type: string
+                    example: "Reserva criada com sucesso"
+                  booking:
+                    type: object
+                    properties:
+                      id_reserva:
+                        type: integer
+                        example: 1
+                      id_usuario:
+                        type: integer
+                        example: 1
+                      id_sessao:
+                        type: integer
+                        example: 1
+                      data_reserva:
+                        type: string
+                        format: date-time
+                        example: "2024-10-04T10:00:00Z"
+                      Cadeiras:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id_cadeira:
+                              type: integer
+                              example: 4
+                            id_tipo_ingresso:
+                              type: integer
+                              example: 2
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    get:
+      summary: Obter todas as reservas
+      tags:
+        - Gerenciar Reservas
+      security:
+        - JWT: []
+      responses:
+        200:
+          description: Todas as reservas obtidas com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  msg:
+                    type: string
+                    example: "Todas as reservas obtidas com sucesso"
+                  bookings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_reserva:
+                          type: integer
+                          description: O identificador único da reserva.
+                          example: 1
+                        id_usuario:
+                          type: integer
+                          description: ID do usuário que fez a reserva.
+                          example: 1
+                        id_sessao:
+                          type: integer
+                          description: ID da sessão para a qual a reserva foi feita.
+                          example: 1
+                        Cadeiras:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id_cadeira:
+                                type: integer
+                                description: O identificador único da cadeira reservada.
+                                example: 4
+                              linha:
+                                type: string
+                                description: A linha onde a cadeira está localizada.
+                                example: 'A'
+                              numero:
+                                type: integer
+                                description: O número da cadeira na linha.
+                                example: 1
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  '/bookings/user/all-my-user':
+    get:
+      summary: Obter todas as reservas do usuário autenticado
+      tags:
+        - Gerenciar Reservas
+      security:
+        - JWT: []  # Nome do esquema de segurança, se necessário
+      responses:
+        200:
+          description: Reservas do usuário recuperadas com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  bookings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reserva'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  '/bookings/user/{id_reserva}':
+    get:
+      summary: Obter uma reserva específica do usuário
+      tags:
+        - Gerenciar Reservas
+      parameters:
+        - name: id_reserva
+          in: path
+          required: true
+          description: ID da reserva a ser recuperada
+          schema:
+            type: integer
+      security:
+        - JWT: []
+      responses:
+        200:
+          description: Reserva recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  booking:
+                    $ref: '#/components/schemas/Reserva'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /bookings/{id_reserva}/confirm:
+    put:
+      summary: Confirmar uma reserva
+      tags:
+        - Gerenciar Reservas
+      security:
+        - JWT: []  # Autenticação usando JWT
+      parameters:
+        - name: id_reserva
+          in: path
+          required: true
+          description: ID da reserva a ser confirmada
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Reserva confirmada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Reserva confirmada com sucesso
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+
+  /bookings/{id_reserva}/cancel:
+    put:
+      summary: Cancelar uma reserva
+      tags:
+        - Gerenciar Reservas
+      security:
+        - JWT: []  # Autenticação usando JWT
+      parameters:
+        - name: id_reserva
+          in: path
+          required: true
+          description: ID da reserva a ser cancelada
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Reserva cancelada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Reserva cancelada com sucesso
         '400':
           $ref: '#/components/responses/400'
         '401':

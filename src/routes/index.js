@@ -11,6 +11,7 @@ import chairRoutes from "./chairRoutes.js";
 import ticketTypeRoutes from "./ticketTypeRoutes.js";
 import sessionRoutes from "./sessionRoutes.js";
 import ticketPriceRoutes from "./ticketPriceRoutes.js";
+import bookingRoutes from "./bookingRoutes.js";
 
 const router = Router();
 
@@ -24,7 +25,8 @@ router.use(roomRoutes);
 router.use(chairRoutes);
 router.use(ticketTypeRoutes);
 router.use(sessionRoutes);
-router.use(ticketPriceRoutes)
+router.use(ticketPriceRoutes);
+router.use(bookingRoutes)
 
 export default router;
 

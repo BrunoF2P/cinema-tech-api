@@ -22,9 +22,14 @@ const app = express();
 const swaggerDocument = YAML.load('docs/swagger.yaml');
 swaggerDocument.servers[0].url = `${process.env.SERVER_URL}/v1`;
 
+const corsOptions = {
+    origin: 'http://localhost:5173', // URL do seu frontend local
+    credentials: true, // Permite o envio de cookies e outras credenciais
+};
+
 // Configurando middlewares
 app.use(logger(process.env.MODE_SYS));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(express.json());

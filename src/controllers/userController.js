@@ -72,7 +72,6 @@ async function registerUser(req, res) {
             httpOnly: true,
             secure: process.env.SECURE === 'production',
             sameSite: 'lax',
-            partitioned: true,
             maxAge: 24 * 60 * 60 * 1000
         });
         res.json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
@@ -122,7 +121,6 @@ async function loginUser(req, res) {
             httpOnly: true,
             secure: process.env.SECURE === 'production',
             sameSite: 'lax',
-            partitioned: true,
             maxAge: 24 * 60 * 60 * 1000
         });
 

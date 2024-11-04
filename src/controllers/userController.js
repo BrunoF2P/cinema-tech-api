@@ -70,7 +70,7 @@ async function registerUser(req, res) {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.SECURE === 'production',
+            secure: false,
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -119,7 +119,7 @@ async function loginUser(req, res) {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.SECURE === 'production',
+            secure: false,
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         });

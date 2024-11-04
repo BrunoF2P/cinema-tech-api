@@ -71,7 +71,7 @@ async function registerUser(req, res) {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.SECURE === 'production',
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         });
         res.json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
@@ -120,7 +120,7 @@ async function loginUser(req, res) {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.SECURE === 'production',
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         });
 

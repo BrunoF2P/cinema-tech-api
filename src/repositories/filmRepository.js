@@ -112,7 +112,7 @@ async function searchFilmsByGenre({ genreId, skip = 0, take = 10 }) {
 
     const totalCount = await prisma.filme.count({
         where: {
-            FilmeGenero: {
+            generos: {
                 some: {
                     id_genero: genreId,
                 },
@@ -125,5 +125,6 @@ async function searchFilmsByGenre({ genreId, skip = 0, take = 10 }) {
         totalCount,
     };
 }
+
 
 export {createFilm, getAllFilms, getFilmById, searchFilmsByTitle, searchFilmsByAgeRating, deleteFilm, updateFilm, searchFilmsByGenre, generateUniqueSlug}

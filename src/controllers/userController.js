@@ -70,14 +70,14 @@ async function registerUser(req, res) {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         });
         res.json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
 
     } catch (err) {
-        res.status(500).json({ success: false, msg: 'Falha ao cadastrar o usuário' });
+        res.status(500).json({ success: false, msg: 'Falha ao cadastrar o usuário' + err });
     }
 }
 
@@ -119,7 +119,7 @@ async function loginUser(req, res) {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         });

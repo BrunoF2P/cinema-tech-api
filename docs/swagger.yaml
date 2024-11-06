@@ -21,174 +21,304 @@ components:
 
         **Atenção:** Acesso a determinados endpoints requer permissões administrativas. Certifique-se de que você possui as credenciais apropriadas antes de tentar acessar esses recursos.
   schemas:
+    Usuarios:
+      type: object
+      properties:
+        nome:
+          type: string
+          description: "Nome completo do usuário."
+          example: "João da Silva"
+        email:
+          type: string
+          description: "Endereço de e-mail do usuário."
+          example: "joao.silva@gmail.com"
+        senha:
+          type: string
+          description: "Senha para autenticação do usuário."
+          example: "senha123"
+        re_senha:
+          type: string
+          description: "Campo de confirmação de senha, deve ser igual ao campo 'senha'."
+          example: "senha123"
+        cpf:
+          type: string
+          description: "Número do CPF do usuário, com 11 dígitos."
+          example: "12345678901"
+        data_nascimento:
+          type: string
+          format: date
+          description: "Data de nascimento do usuário, no formato AAAA-MM-DD."
+          example: "2000-10-10"
+        id_estado:
+          type: integer
+          description: "Identificador do estado onde o usuário reside."
+          example: 1
+        id_cidade:
+          type: integer
+          description: "Identificador da cidade onde o usuário reside."
+          example: 1
+        codigo_ref:
+          type: string
+          description: "Código de referência adicional associado ao usuário."
+          example: "abc123"
+      required:
+        - nome
+        - email
+        - senha
+        - re_senha
+        - cpf
+        - data_nascimento
+        - id_estado
+        - id_cidade
     Filmes:
       type: object
       properties:
+        id_filme:
+          type: integer
+          readOnly: true
+          example: 1
+          description: "Identificador único do filme."
+        id_api:
+          type: integer
+          readOnly: true
+          example: null
+          description: "Identificador único do filme cadastrado por uma API de terceiros, se aplicável."
         titulo:
           type: string
+          example: "Exemplo de Filme"
+          description: "Título do filme."
+        slug:
+          type: string
+          example: "exemplo-de-filme"
+          description: "Slug do título do filme."
         sinopse:
           type: string
+          example: "Uma breve descrição do filme."
+          description: "Sinopse do filme, fornecendo uma visão geral da trama."
         data_lancamento:
           type: string
+          format: date
+          example: "2024-09-01"
+          description: "Data de lançamento do filme no formato YYYY-MM-DD."
         duracao:
           type: integer
+          example: 120
+          description: "Duração do filme em minutos."
         classificacao_etaria:
           type: integer
+          example: 12
+          description: "Classificação etária recomendada para o filme."
         poster_path:
           type: string
+          format: uri
+          example: "https://link.net/"
+          description: "URL do poster do filme."
         backdrop_path:
           type: string
+          format: uri
+          example: "https://link.net/"
+          description: "URL da imagem de fundo do filme."
         nota_imdb:
           type: number
+          format: float
+          example: 8.7
+          description: "Nota do filme no IMDb, em uma escala de 0 a 10."
         generos:
           type: array
           items:
             type: integer
-      x-examples:
-        Example 1:
-          titulo: Exemplo de Filme
-          sinopse: Uma breve descrição do filme.
-          data_lancamento: '2024-09-01'
-          duracao: 120
-          classificacao_etaria: 12
-          poster_path: 'https://link.net/'
-          backdrop_path: 'https://link.net/'
-          nota_imdb: 8.7
-          generos:
-            - 1
-            - 4
-            - 6
+          example: [1, 4, 6]
+          description: "Lista de IDs dos gêneros associados ao filme."
+      required:
+        - titulo
+        - sinopse
+        - data_lancamento
+        - duracao
+        - classificacao_etaria
+        - poster_path
+        - backdrop_path
+        - nota_imdb
+        - generos
     Generos:
       type: object
       properties:
+        id_genero:
+          type: integer
+          example: 1
+          readOnly: true
+          description: "Identificador único do gênero, gerado automaticamente."
+        id_api:
+          type: integer
+          readOnly: true
+          example: null
+          description: "Identificador único do genero cadastrado por uma API de terceiros, se aplicável."
         nome_genero:
           type: string
-      x-examples:
-        Example 1:
-          nome_genero: Aventura
+          example: "Aventura"
+          description: "Nome do gênero do filme."
+      required:
+        - nome_genero
     Estados:
       type: object
       properties:
+        id_estado:
+          type: integer
+          example: 1
+          readOnly: true
+          description: "Identificador único do estado, gerado automaticamente."
         nome_estado:
           type: string
+          example: "São Paulo"
+          description: "Nome completo do estado."
         sigla_estado:
           type: string
-      x-examples:
-        Example 1:
-          nome_estado: ''
-          sigla_estado: SA
+          example: "SP"
+          description: "Sigla do estado, composta por duas letras."
+      required:
+        - nome_estado
+        - sigla_estado
     Cidades:
       type: object
       properties:
+        id_cidade:
+          type: integer
+          example: 1
+          readOnly: true
+          description: "Identificador único da cidade, gerado automaticamente."
         nome_cidade:
           type: string
+          example: "Alagoinhas"
+          description: "Nome completo da cidade."
         id_estado:
           type: integer
-      x-examples:
-        Example 1:
-          nome_cidade: Alagoinhas
-          id_estado: 11
+          example: 11
+          description: "Identificador único do estado ao qual a cidade pertence."
+      required:
+        - nome_cidade
+        - id_cidade
     Salas:
       type: object
       properties:
+        id_sala:
+          type: integer
+          example: 1
+          readOnly: true
+          description: "Identificador único da sala, gerado automaticamente."
         nome_sala:
           type: string
+          example: "ROOMEXEMPLO"
+          description: "Nome da sala."
         capacidade:
           type: integer
+          readOnly: true
+          example: 0
+          description: "Capacidade total de assentos na sala."
         id_tipo_sala:
           type: integer
+          example: 1
+          description: "Identificador do tipo de sala."
         ativo:
           type: boolean
+          example: true
+          description: "Indica se a sala está ativa."
         cadeiras:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/Cadeiras'
+          description: "Lista de cadeiras disponíveis na sala."
         tipoSala:
-          type: array
-          items:
-            type: integer
-      x-examples:
-        Example 1:
-          nome_sala: 'ROOMEXEMPLO'
-          capacidade: 0
-          ativo: true
-          cadeiras:
-            id_cadeira: 1
-            linha: 'F'
-            numero: 32
-            ativo: true
-          tipoSala:
-            id_tipo_sala: 1
-            descricao: 'Normal'
+          type: object
+          properties:
+            id_tipo_sala:
+              type: integer
+              example: 1
+              description: "Identificador único do tipo de sala."
+            descricao:
+              type: string
+              example: "Normal"
+              description: "Descrição do tipo de sala, como Normal, VIP, etc."
+          description: "Informações sobre o tipo de sala."
+      required:
+        - nome_sala
+        - id_tipo_sala
+        - ativo
+        - cadeiras
     TipoSalas:
       type: object
       properties:
+        id_tipo_sala:
+          type: integer
+          example: 1
+          readOnly: true
+          description: "Identificador único do tipo de sala, gerado automaticamente."
         descricao:
           type: string
-      x-examples:
-        Example 1:
-          descricao: 'IMEX'
+          example: "IMEX"
+          description: "Descrição do tipo de sala, indicando sua categoria ou características."
+      required:
+        - descricao
     Cadeiras:
       type: object
       properties:
         id_cadeira:
           type: integer
-          description: O identificador único da cadeira.
+          readOnly: true
+          description: "Identificador único da cadeira, gerado automaticamente."
+          example: 1
         id_sala:
           type: integer
-          description: O identificador da sala à qual a cadeira pertence.
+          description: "Identificador da sala à qual a cadeira pertence."
+          example: 3
         linha:
           type: string
-          description: A linha onde a cadeira está localizada.
+          description: "Linha onde a cadeira está localizada."
           maxLength: 1
+          example: "F"
         numero:
           type: integer
-          description: O número da cadeira na linha.
-          minLength: 1
-          maxLength: 99
+          description: "Número da cadeira na linha."
+          minimum: 1
+          maximum: 99
+          example: 32
         ativo:
           type: boolean
-          description: Indica se a cadeira está ativa.
+          description: "Indica se a cadeira está ativa."
           default: true
+          example: true
       required:
-        - id_cadeira
         - id_sala
         - linha
         - numero
         - ativo
-      x-examples:
-        Example 1:
-          id_cadeira: 1
-          id_sala: 3
-          linha: 'F'
-          numero: 32
-          ativo: true
     TipoIngresso:
       type: object
       properties:
         id_tipo:
           type: integer
-          description: Identificador único do tipo de ingresso
+          readOnly: true
+          description: "Identificador único do tipo de ingresso."
           example: 1
         descricao:
           type: string
-          description: Descrição do tipo de ingresso
+          description: "Descrição do tipo de ingresso."
           example: "Ingresso Normal"
         ingressos:
           type: array
-        PrecoIngresso:
+          description: "Lista de ingressos associados a este tipo."
+        precos:
           type: array
+          items:
+            $ref: '#/components/schemas/PrecoIngresso'
+          description: "Lista de preços de ingressos associados a este tipo."
       required:
-        - id_tipo
         - descricao
-      x-examples:
-        Example 1:
-          descricao: "Inteira"
+
     Sessao:
       type: object
       properties:
         id_sessao:
           type: integer
+
           example: 1
           description: "Identificador único da sessão."
         id_filme:
@@ -205,105 +335,108 @@ components:
           example: "2024-10-03T18:00:00Z"
           description: "Data e hora da sessão."
         filme:
-          type: array
-          example:
-            "id_filme": 1
-            "titulo": "Filme diferente"
-          description: "Filme selecionado"
+          type: object
+          properties:
+            id_filme:
+              type: integer
+              example: 1
+            titulo:
+              type: string
+              example: "Filme diferente"
+          description: "Filme selecionado."
         sala:
-          type: array
-          example:
-            "id_sala": 1
-            "nome_sala": "GBD2"
-            "capacidade": 50
-            "id_tipo_sala": 3
-          description: "Sala da sessao"
+          type: object
+          properties:
+            id_sala:
+              type: integer
+              example: 1
+            nome_sala:
+              type: string
+              example: "GBD2"
+            capacidade:
+              type: integer
+              example: 50
+            id_tipo_sala:
+              type: integer
+              example: 3
+          description: "Sala da sessão."
         reservas:
           type: array
+          items:
+            $ref: '#/components/schemas/Reserva'
           description: "Lista de reservas associadas à sessão."
-        Ingresso:
+        ingressos:
           type: array
           description: "Lista de ingressos associados à sessão."
-        PrecoIngresso:
+        precos_ingresso:
           type: array
-          description: "Lista de preços de ingressos associados à sessão."
           items:
             $ref: '#/components/schemas/PrecoIngresso'
+          description: "Lista de preços de ingressos associados à sessão."
       required:
         - id_filme
         - id_sala
         - data_sessao
-      x-examples:
-        Example 1:
-          id_filme: 1
-          id_sala: 1
-          data_sessao: "2024-10-03T18:00:00Z"
     PrecoIngresso:
       type: object
       properties:
         id_preco:
           type: integer
-          description: O identificador único do preço do ingresso.
+          description: "O identificador único do preço do ingresso."
+          example: 1
         id_sessao:
           type: integer
-          description: O identificador da sessão à qual o preço do ingresso pertence.
+          description: "O identificador da sessão à qual o preço do ingresso pertence."
+          example: 4
         id_tipo:
           type: integer
-          description: O identificador do tipo de ingresso associado a este preço.
+          description: "O identificador do tipo de ingresso associado a este preço."
+          example: 1
         preco:
           type: string
-          description: O valor do preço do ingresso.
+          description: "O valor do preço do ingresso."
           example: "30.00"
       required:
         - id_sessao
         - id_tipo
         - preco
-      x-examples:
-        Example 1:
-          id_sessao: 4
-          id_tipo: 1
-          preco: "30.00"
-        Example 2:
-          id_sessao: 4
-          id_tipo: 2
-          preco: "15.00"
 
     Reserva:
       type: object
       properties:
         id_reserva:
           type: integer
-          description: O identificador único da reserva.
+          description: "O identificador único da reserva."
         id_usuario:
           type: integer
-          description: O identificador do usuário que fez a reserva.
+          description: "O identificador do usuário que fez a reserva."
         id_sessao:
           type: integer
-          description: O identificador da sessão para a qual a reserva foi feita.
+          description: "O identificador da sessão para a qual a reserva foi feita."
         data_reserva:
           type: string
           format: date-time
-          description: A data e hora em que a reserva foi realizada.
+          description: "A data e hora em que a reserva foi realizada."
         data_expiracao:
           type: string
           format: date-time
-          description: A data e hora em que a reserva expira.
+          description: "A data e hora em que a reserva expira."
         status:
           type: string
-          description:
-            O status da reserva (ex: pendente, confirmado, cancelado).
-          enum: [ pendente, confirmado, cancelado ]
+          description: "O status da reserva (ex: pendente, confirmado, cancelado)."
+          enum: [pendente, confirmado, cancelado]
         total:
           type: number
           format: decimal
-          description: O valor total da reserva.
+          description: "O valor total da reserva."
         transacao_id:
           type: string
-          description: O identificador da transação associada à reserva.
-        Cadeiras:
+          description: "O identificador da transação associada à reserva."
+        cadeiras:
           type: array
           items:
             $ref: '#/components/schemas/Cadeiras'  # Refere-se ao schema Cadeiras
+          description: "Lista de cadeiras associadas à reserva."
       required:
         - id_reserva
         - id_usuario
@@ -322,7 +455,7 @@ components:
           status: 'confirmado'
           total: 45.00
           transacao_id: '25'
-          Cadeiras:
+          cadeiras:
             - id_cadeira: 1
               id_sala: 3
               linha: 'F'
@@ -390,23 +523,64 @@ components:
           schema:
             type: object
             properties:
+              success:
+                type: boolean
+                example: false
               msg:
                 type: string
-            x-examples:
-              Example 1:
-                msg: Não autorizado
+                example: Parâmetros inválidos
     '401':
       description: Não autorizado
-      content: {}
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              msg:
+                type: string
+                example: Não autorizado
     '403':
       description: Acesso negado. Apenas administradores podem acessar esta rota.
-      content: {}
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              msg:
+                type: string
+                example: Acesso negado. Apenas administradores podem acessar esta rota.
     '404':
       description: Não encontrado
-      content: {}
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              msg:
+                type: string
+                example: Não encontrado
     '500':
       description: Falha ao buscar os dados
-      content: {}
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              msg:
+                type: string
+                example: Falha ao buscar os dados
     200-Generos:
       description: Genero retornado com sucesso
       content:
@@ -646,49 +820,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                nome:
-                  type: string
-                email:
-                  type: string
-                senha:
-                  type: string
-                re_senha:
-                  type: string
-                cpf:
-                  type: string
-                data_nascimento:
-                  type: string
-                id_estado:
-                  type: integer
-                id_cidade:
-                  type: integer
-                codigo_ref:
-                  type: string
-              x-examples:
-                Example 1:
-                  nome: Bruno Bispo
-                  email: bruno@example.com
-                  senha: senha123
-                  re_senha: senha123
-                  cpf: '66115166039'
-                  data_nascimento: '1990-01-01'
-                  id_estado: 29
-                  id_cidade: 1835
-                  codigo_ref: LP3
-            examples:
-              Example 1:
-                value:
-                  nome: string
-                  email: string@gmail.com
-                  senha: string
-                  re_senha: string
-                  cpf: '12345678901'
-                  data_nascimento: '2000-10-10'
-                  id_estado: 0
-                  id_cidade: 0
-                  codigo_ref: ''
+              $ref: '#/components/schemas/Usuarios'
       responses:
         '200':
           description: Cadastro bem-sucedido
@@ -751,10 +883,12 @@ paths:
                 email:
                   type: string
                   format: email
-                  description: Email do usuário
+                  example: "string@gmail.com"
+                  description: "Email do usuário"
                 senha:
                   type: string
-                  description: Senha do usuário
+                  example: "string"
+                  description: "Senha do usuário"
       responses:
         '200':
           description: Login bem-sucedido
@@ -953,7 +1087,54 @@ paths:
             type: string
       responses:
         '200':
-          $ref: '#/components/responses/200'
+          description: Lista de filmes retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  msg:
+                    type: string
+                  films:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_filme:
+                          type: integer
+                        id_api:
+                          type: integer
+                        titulo:
+                          type: string
+                        slug:
+                          type: string
+                        sinopse:
+                          type: string
+                        data_lancamento:
+                          type: string
+                        duracao:
+                          type: integer
+                        classificacao_etaria:
+                          type: integer
+                        poster_path:
+                          type: string
+                        backdrop_path:
+                          type: string
+                        nota_imdb:
+                          type: string
+                        generos:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id_genero:
+                                type: integer
+                              id_api:
+                                type: integer
+                              nome_genero:
+                                type: string
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -1038,29 +1219,6 @@ paths:
                     type: integer
                   currentPage:
                     type: integer
-                x-examples:
-                  Example 1:
-                    success: true
-                    msg: Pesquisa solicitada com sucesso
-                    films:
-                      - id_filme: 1
-                        id_api: null
-                        titulo: Exemplo de Filme
-                        slug: exemplo-de-filme
-                        sinopse: Uma breve descrição do filme.
-                        data_lancamento: '2024-09-01T00:00:00.000Z'
-                        duracao: 120
-                        classificacao_etaria: 12
-                        poster_path: 'https://meupc.net/'
-                        backdrop_path: 'https://meupc.net/'
-                        nota_imdb: '8.7'
-                        generos:
-                          - id_genero: 1
-                            id_api: null
-                            nome_genero: Aventura
-                    totalCount: 1
-                    totalPages: 1
-                    currentPage: 1
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -1206,14 +1364,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Generos'
-            examples:
-              Example 1:
-                value:
-                  success: true
-                  msg: string
-                  genre:
-                    id_genero: 0
-                    nome_genero: string
   '/genres/{id}':
     get:
       summary: Buscar gêneros por ID
@@ -1225,7 +1375,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '404':
-          description: Not Found
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
       operationId: 'get-genres-:id'
@@ -1293,7 +1443,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '500':
@@ -1458,7 +1608,7 @@ paths:
         '200':
           $ref: '#/components/responses/200-Cidades'
         '400':
-          description: Bad Request
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -1500,7 +1650,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -1561,7 +1711,7 @@ paths:
         '200':
           $ref: '#/components/responses/200-Salas'
         '400':
-          description: Bad Request
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -1606,7 +1756,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -1665,7 +1815,7 @@ paths:
         '200':
           $ref: '#/components/responses/200-TipoSalas'
         '400':
-          description: Bad Request
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -1707,7 +1857,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -1879,7 +2029,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
         '500':

@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { check, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { findTypeUserByDescription } from '../repositories/userRepository.js';
 import { isValidCPF, isValidName } from '../utils/validators.js';
 import { validateErrors } from './genericMiddleware.js';

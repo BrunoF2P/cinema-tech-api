@@ -1,4 +1,3 @@
-import {validationResult} from 'express-validator';
 import bcrypt from 'bcryptjs'
 import {findUserByEmail, createUser, findUserByCpf} from '../repositories/userRepository.js'
 import jwt from 'jsonwebtoken';

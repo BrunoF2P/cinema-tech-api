@@ -3,7 +3,7 @@ import passport from 'passport';
 function authenticateJwt(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Altere para o URL do seu frontend
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    passport.authenticate('jwt', { session: false }, (err, user) => {
         if (err) {
             return res.status(500).json({ msg: 'Erro de autenticação', error: err });
         }

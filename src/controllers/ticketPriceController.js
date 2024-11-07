@@ -27,7 +27,7 @@ const ticketPriceController = {
                 preco
             });
 
-            res.json({ success: true, msg: 'Preço do ingresso cadastrado com sucesso', ticketPriceData });
+            res.status(201).json({ success: true, msg: 'Preço do ingresso cadastrado com sucesso', ticketPriceData });
         } catch (error) {
             console.error(error);
             res.status(500).json({ success: false, msg: 'Falha ao cadastrar o preço do ingresso' });

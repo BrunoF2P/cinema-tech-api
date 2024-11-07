@@ -38,7 +38,7 @@ const filmController = {
 
             });
 
-            res.json({ success: true, msg: 'Filme cadastrado com sucesso', filmData});
+            res.status(201).json({ success: true, msg: 'Filme cadastrado com sucesso', filmData});
 
         } catch (error) {
             res.status(500).json({ success: false, msg: 'Falha ao cadastrar o filme' });

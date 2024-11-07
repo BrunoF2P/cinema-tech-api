@@ -28,7 +28,7 @@ const genreController = {
             }
 
             const newGenre = await createGenre({nome_genero});
-            res.json({
+            res.status(201).json({
                 success: true,
                 msg: 'Gênero criado com sucesso',
                 genre: newGenre,

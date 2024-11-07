@@ -20,7 +20,7 @@ const cityController = {
 
         try {
             const newCity = await createCity({ nome_cidade, id_estado });
-            res.json({
+            res.status(201).json({
                 success: true,
                 msg: 'Cidade criada com sucesso',
                 city: newCity,

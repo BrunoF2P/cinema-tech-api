@@ -25,7 +25,7 @@ const stateController = {
             }
 
             const newState = await createState({ nome_estado, sigla_estado });
-            res.json({
+            res.status(201).json({
                 success: true,
                 msg: 'Estado criado com sucesso',
                 state: newState,

@@ -61,7 +61,7 @@ const bookingController = {
             const newBooking = await createBooking(bookingData); // Cria a reserva
             bookings.push(newBooking); // Adiciona a nova reserva ao array
 
-            res.json({ success: true, msg: 'Reservas criadas com sucesso.', bookings });
+            res.status(201).json({ success: true, msg: 'Reservas criadas com sucesso.', bookings });
         } catch (error) {
             res.status(500).json({ success: false, msg: 'Falha ao criar as reservas' });
         }

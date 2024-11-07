@@ -14,7 +14,7 @@ const ticketTypeController = {
         try {
             const typeTickerData = await createTicketType({descricao});
 
-            res.json({ success: true, msg: 'Tipo de ticket cadastrado com sucesso', typeTickerData })
+            res.status(201).json({ success: true, msg: 'Tipo de ticket cadastrado com sucesso', typeTickerData })
         } catch (error) {
             res.status(500).json({success: false, msg: 'Falha ao cadastrar o tipo de ingresso'})
         }

@@ -25,7 +25,7 @@ const sessionController = {
                 data_sessao: new Date(data_sessao),
             });
 
-            res.json({ success: true, msg: 'Sessão do filme cadastrada com sucesso', sessionData });
+            res.status(201).json({ success: true, msg: 'Sessão do filme cadastrada com sucesso', sessionData });
 
         } catch (error) {
             res.status(500).json({ success: false, msg: 'Falha ao cadastrar a sessão' });

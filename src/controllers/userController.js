@@ -12,7 +12,7 @@ async function registerUser(req, res) {
     // Valida os campos de entrada
     const validation = validationResult(req);
     if (!validation.isEmpty()) {
-        return res.status(400).json({ erro: validation.array() });
+        return res.status(400).json({success: false, errors: validation.array() });
     }
 
     try {
@@ -20,30 +20,30 @@ async function registerUser(req, res) {
         // Verifica cpf já possui cadastro
         const cpfExist = await findUserByCpf(cpf);
         if (cpfExist) {
-            return res.status(400).json({ msg: 'CPF já está cadastrado', path: 'cpf' });
+            return res.status(400).json({ success: false, msg: 'CPF já está cadastrado', path: 'cpf' });
         }
 
         // Verifica se o email está cadastrado
         const emailExist = await findUserByEmail(email);
         if (emailExist) {
-            return res.status(400).json({ msg: 'Email já possui cadastro', path: 'email' });
+            return res.status(400).json({ success: false, msg: 'Email já possui cadastro', path: 'email' });
         }
 
         // Verifica se existe estado
         const stateExist = await getStateById(id_estado);
         if (!stateExist) {
-            return res.status(400).json({ msg: 'Estado não encontrada', path: 'endereco' });
+            return res.status(400).json({ success: false, msg: 'Estado não encontrada', path: 'endereco' });
         }
 
         // Verifica se a cidade existe
         const cityExist = await getCityById(id_cidade);
         if (!cityExist) {
-            return res.status(400).json({ msg: 'Cidade não encontrada', path: 'endereco' });
+            return res.status(400).json({ success: false, msg: 'Cidade não encontrada', path: 'endereco' });
         }
 
         // Verifica se a cidade está relacionada com o estado
         if (cityExist.id_estado !== stateExist.id_estado) {
-            return res.status(400).json({ msg: 'Cidade não pertence ao estado fornecido', path: 'endereco' });
+            return res.status(400).json({ success: false, msg: 'Cidade não pertence ao estado fornecido', path: 'endereco' });
         }
 
 
@@ -74,10 +74,10 @@ async function registerUser(req, res) {
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         });
-        res.json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
+        res.status(201).json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
 
     } catch (err) {
-        res.status(500).json({ success: false, msg: 'Falha ao cadastrar o usuário' + err });
+        res.status(500).json({ success: false, msg: 'Falha ao cadastrar o usuário' });
     }
 }
 
@@ -88,20 +88,20 @@ async function loginUser(req, res) {
     // Valida os campos de entrada
     const validation = validationResult(req);
     if (!validation.isEmpty()) {
-        return res.status(400).json({ erro: validation.array() });
+        return res.status(400).json({success: false, errors: validation.array() });
     }
 
     try {
         // Verifica se o email está cadastrado
         const usuario = await findUserByEmail(email);
         if (!usuario) {
-            return res.status(400).json({ msg: 'Email não encontrado', path: 'email' });
+            return res.status(400).json({ success: false, msg: 'Email não encontrado', path: 'email' });
         }
 
         // Verifica a senha
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
         if (!senhaValida) {
-            return res.status(400).json({ msg: 'Senha incorreta', path: 'senha' });
+            return res.status(400).json({ success: false, msg: 'Senha incorreta', path: 'senha' });
         }
 
         // Cria o payload com base no usuário

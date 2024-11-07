@@ -45,7 +45,7 @@ const chairController = {
                 return await addChairToRoom(parseInt(id_sala), linha, numero);
             }));
 
-            res.json({
+            res.status(201).json({
                 success: true,
                 msg: 'Cadeiras processadas com sucesso',
                 results,

@@ -15,7 +15,7 @@ const typeRoomController = {
         try {
             const typeRoomData = await createTypeRoom({descricao});
 
-            res.json({success: true, msg: 'Tipo de sala cadastrado com sucesso', typeRoomData});
+            res.status(201).json({success: true, msg: 'Tipo de sala cadastrado com sucesso', typeRoomData});
         } catch (error) {
             res.status(500).json({success: false, msg: 'Falha ao cadastrar o tipo de sala'});
         }

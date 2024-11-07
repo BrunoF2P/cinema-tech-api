@@ -73,7 +73,7 @@ model Filme {
   duracao              Int
   classificacao_etaria Int
   poster_path          String        @db.VarChar(255)
-  backdrop_path        String        @db.VarChar(255)
+  trailer_url          String        @db.VarChar(255)
   nota_imdb            Decimal       @db.Decimal(3, 2)
   generos              Genero[]      @relation("FilmeGeneros")
   FilmeGenero          FilmeGenero[]

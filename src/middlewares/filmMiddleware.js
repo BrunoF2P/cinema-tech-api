@@ -47,9 +47,9 @@ function validationFilmOP(isOptional) {
             .optional(isOptional)
             .isURL().withMessage('O caminho do poster deve ser uma URL válida'),
 
-        check('backdrop_path')
+        check('trailer_url')
             .optional(isOptional)
-            .isURL().withMessage('O caminho do backdrop deve ser uma URL válida'),
+            .isURL().withMessage('A URL do trailer deve ser um link valido válida'),
 
         check('nota_imdb')
             .optional(isOptional)

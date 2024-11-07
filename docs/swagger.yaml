@@ -118,11 +118,11 @@ components:
           format: uri
           example: "https://link.net/"
           description: "URL do poster do filme."
-        backdrop_path:
+        trailer_url:
           type: string
           format: uri
           example: "https://link.net/"
-          description: "URL da imagem de fundo do filme."
+          description: "URL do trailer do filme."
         nota_imdb:
           type: number
           format: float
@@ -141,7 +141,7 @@ components:
         - duracao
         - classificacao_etaria
         - poster_path
-        - backdrop_path
+        - trailer_url
         - nota_imdb
         - generos
     Generos:
@@ -498,7 +498,7 @@ components:
                     type: integer
                   classificacao_etaria:
                     type: integer
-                  poster_path:
+                  trailer_url:
                     type: string
                   backdrop_path:
                     type: string
@@ -518,7 +518,7 @@ components:
                   duracao: 120
                   classificacao_etaria: 12
                   poster_path: 'https://meupc.net/'
-                  backdrop_path: 'https://meupc.net/'
+                  trailer_url: 'https://meupc.net/'
                   nota_imdb: '8.7'
 
       headers: {}
@@ -1136,7 +1136,7 @@ paths:
                           type: integer
                         poster_path:
                           type: string
-                        backdrop_path:
+                        trailer_url:
                           type: string
                         nota_imdb:
                           type: string
@@ -1214,7 +1214,7 @@ paths:
                           type: integer
                         poster_path:
                           type: string
-                        backdrop_path:
+                        trailer_url:
                           type: string
                         nota_imdb:
                           type: string
@@ -1299,7 +1299,7 @@ paths:
                           type: integer
                         poster_path:
                           type: string
-                        backdrop_path:
+                        trailer_url:
                           type: string
                         nota_imdb:
                           type: string
@@ -1334,7 +1334,7 @@ paths:
                         duracao: 120
                         classificacao_etaria: 12
                         poster_path: 'https://meupc.net/'
-                        backdrop_path: 'https://meupc.net/'
+                        trailer_url: 'https://meupc.net/'
                         nota_imdb: '8.7'
                         generos:
                           - id_genero: 1

@@ -10,7 +10,7 @@ import {validationResult} from 'express-validator';
 const filmController = {
     // Criar um filme
     async  createFilmController (req, res) {
-        const { titulo, sinopse, data_lancamento, duracao, classificacao_etaria, poster_path, backdrop_path, nota_imdb, generos } = req.body;
+        const { titulo, sinopse, data_lancamento, duracao, classificacao_etaria, poster_path, trailer_url, nota_imdb, generos } = req.body;
 
         const validation = validationResult(req);
         if (!validation.isEmpty()) {
@@ -28,7 +28,7 @@ const filmController = {
                     duracao,
                     classificacao_etaria,
                     poster_path,
-                    backdrop_path,
+                    trailer_url,
                     nota_imdb,
                     slug: await generateUniqueSlug(titulo),
                     generos: {
@@ -186,7 +186,7 @@ const filmController = {
             return res.status(404).json({success: false, msg: 'Filme não encontrado'
             });}
 
-        const { titulo, sinopse, data_lancamento, duracao, classificacao_etaria, poster_path, backdrop_path, nota_imdb, generos } = req.body;
+        const { titulo, sinopse, data_lancamento, duracao, classificacao_etaria, poster_path, trailer_url, nota_imdb, generos } = req.body;
 
         let formattedDate = null;
 
@@ -208,7 +208,7 @@ const filmController = {
                 ...(duracao && { duracao }),
                 ...(classificacao_etaria && { classificacao_etaria }),
                 ...(poster_path && { poster_path }),
-                ...(backdrop_path && { backdrop_path }),
+                ...(trailer_url && { trailer_url }),
                 ...(nota_imdb && { nota_imdb }),
                 ...(generos && {
                     generos: {

@@ -6,7 +6,7 @@ import {getStateById} from "../repositories/stateRepository.js";
 import {getCityById} from "../repositories/cityRepository.js";
 
 async function registerUser(req, res) {
-    const { nome, senha, email, cpf, data_nascimento, id_estado, id_cidade, tipoUsuarioId } = req.body;
+    const { nome, senha, email, cpf, data_nascimento, id_estado, id_cidade, codigo_ref } = req.body;
 
     try {
 
@@ -50,7 +50,7 @@ async function registerUser(req, res) {
             data_nascimento: new Date(data_nascimento),
             id_estado,
             id_cidade,
-            tipoUsuarioId,
+            codigo_ref,
         })
 
 

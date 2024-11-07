@@ -28,7 +28,7 @@ async function createUser(userData) {
                 connect: { id_cidade: userData.id_cidade },
             },
             tipoUsuario: {
-                connect: { id_tipo_usuario: userData.tipoUsuarioId },
+                connect: { id_tipo_usuario: userData.codigo_ref },
             },
         },
     });

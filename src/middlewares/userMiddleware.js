@@ -88,15 +88,10 @@ async function validateTipeUser(req, res, next) {
             });
         }
 
-        req.body.tipoUsuarioId = tipoUsuarioId;
-
-        // Valida o tipo de usuário
-        body('tipoUsuarioId')
-            .isInt().withMessage('ID do tipo de usuário é obrigatório e deve ser um número');
+        req.body.codigo_ref = tipoUsuarioId;
 
         next();
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             success: false,
             msg: 'Falha ao validar usuário',

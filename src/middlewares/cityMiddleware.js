@@ -17,7 +17,7 @@ function validateCityOP(isOptional) {
 async function validateCity(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ erro: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
     }
     next();
 }
@@ -29,7 +29,7 @@ const validateCityId = [
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ erro: errors.array() });
+            return res.status(400).json({ errors: errors.array() });
         }
         next();
     }

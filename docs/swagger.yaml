@@ -24,6 +24,11 @@ components:
     Usuarios:
       type: object
       properties:
+        id_usuario:
+          type: integer
+          readOnly: true
+          description: "Identificador único do usuario."
+          example: "1"
         nome:
           type: string
           description: "Nome completo do usuário."
@@ -195,7 +200,7 @@ components:
           description: "Identificador único do estado ao qual a cidade pertence."
       required:
         - nome_cidade
-        - id_cidade
+        - id_estado
     Salas:
       type: object
       properties:
@@ -318,7 +323,6 @@ components:
       properties:
         id_sessao:
           type: integer
-
           example: 1
           description: "Identificador único da sessão."
         id_filme:
@@ -377,6 +381,8 @@ components:
         - id_filme
         - id_sala
         - data_sessao
+        - filme
+        - sala
     PrecoIngresso:
       type: object
       properties:
@@ -845,15 +851,17 @@ paths:
               schema:
                 type: object
                 properties:
-                  erro:
+                  errors:
                     type: array
                     items:
                       type: object
                       properties:
                         msg:
                           type: string
-                        param:
+                          example: "Email invalido"
+                        path:
                           type: string
+                          example: "email"
         '500':
           description: Erro interno do servidor
           content:
@@ -907,15 +915,23 @@ paths:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
-          description: Erro de validação ou de autenticação
+          description: Erro de validação ou de dados
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  msg:
-                    type: string
-                    example: Email não encontrado
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        msg:
+                          type: string
+                          example: "Email invalido"
+                        path:
+                          type: string
+                          example: "email"
         '500':
           description: Erro interno do servidor
           content:

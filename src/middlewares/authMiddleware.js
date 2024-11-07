@@ -8,7 +8,7 @@ function authenticateJwt(req, res, next) {
             return res.status(500).json({ msg: 'Erro de autenticação', error: err });
         }
         if (!user) {
-            return res.status(401).json({ msg: 'Não autorizado' });
+            return res.status(401).json({success:false, msg: 'Não autorizado' });
         }
         req.user = user;
         next();
@@ -19,7 +19,7 @@ function authorizeAdmin(req, res, next) {
     if (req.user && req.user.id_tipo_usuario === 1) {
         next();
     } else {
-        res.status(403).json({ msg: 'Acesso negado. Apenas administradores podem acessar esta rota.' });
+        res.status(403).json({success:false, msg: 'Acesso negado. Apenas administradores podem acessar esta rota.' });
     }
 }
 

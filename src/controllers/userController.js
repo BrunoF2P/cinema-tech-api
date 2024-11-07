@@ -9,12 +9,6 @@ import {getCityById} from "../repositories/cityRepository.js";
 async function registerUser(req, res) {
     const { nome, senha, email, cpf, data_nascimento, id_estado, id_cidade, tipoUsuarioId } = req.body;
 
-    // Valida os campos de entrada
-    const validation = validationResult(req);
-    if (!validation.isEmpty()) {
-        return res.status(400).json({success: false, errors: validation.array() });
-    }
-
     try {
 
         // Verifica cpf já possui cadastro
@@ -84,12 +78,6 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
     const { email, senha } = req.body;
-
-    // Valida os campos de entrada
-    const validation = validationResult(req);
-    if (!validation.isEmpty()) {
-        return res.status(400).json({success: false, errors: validation.array() });
-    }
 
     try {
         // Verifica se o email está cadastrado

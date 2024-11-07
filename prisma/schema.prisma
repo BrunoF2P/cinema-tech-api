@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -133,8 +134,8 @@ model Cadeira {
   Ingresso       Ingresso[]
   ReservaCadeira ReservaCadeira[]
 
-  @@map("cadeiras")
   @@unique([id_sala, linha, numero])
+  @@map("cadeiras")
 }
 
 model Sessao {

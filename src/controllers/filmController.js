@@ -119,11 +119,6 @@ const filmController = {
 
         try {
             const films = await searchFilmsByTitle(title);
-
-            if (films.length === 0) {
-                return res.status(404).json({ success: false, msg: 'Nenhum filme encontrado com o título fornecido.' });
-            }
-
             res.json({
                 success: true,
                 msg: 'Pesquisa solicitada com sucesso',

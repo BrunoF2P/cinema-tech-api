@@ -1,4 +1,5 @@
 import {findAll, findByUnique, create, update, deleteById, findByField, checkField} from "./genericRepository.js";
+import prisma from "../../prismaClient.js";
 
 async function getAllSession(){
     return await findAll('sessao', {
@@ -125,6 +126,62 @@ async function getSessionById(id) {
     };
 }
 
+async function getFilmsWithSessionsInWeek() {
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Começo da semana (domingo)
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Fim da semana (sábado)
+
+    const filmsWithSessions = await prisma.filme.findMany({
+        where: {
+            sessoes: {
+                some: {
+                    data_sessao: {
+                        gte: startOfWeek, // Data de início da semana
+                        lte: endOfWeek   // Data de fim da semana
+                    }
+                }
+            }
+        },
+        include: {
+            sessoes: {
+                where: {
+                    data_sessao: {
+                        gte: startOfWeek,
+                        lte: endOfWeek
+                    }
+                },
+                select: {
+                    id_sessao: true,
+                    data_sessao: true,
+                    sala: {
+                        select: {
+                            nome_sala: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    return filmsWithSessions.map(film => ({
+        id: film.id_filme,
+        titulo: film.titulo,
+        sinopse: film.sinopse,
+        data_lancamento: film.data_lancamento,
+        duracao: film.duracao,
+        classificacao_etaria: film.classificacao_etaria,
+        poster: film.poster_path,
+        nota_imdb: film.nota_imdb,
+        sessoes: film.sessoes.map(sessao => ({
+            id_sessao: sessao.id_sessao,
+            data_sessao: sessao.data_sessao,
+            sala: sessao.sala.nome_sala
+        }))
+    }));
+}
+
 
 
 async function getSessionByMovieId(id) {
@@ -163,4 +220,4 @@ async function deleteSession(id){
     return await deleteById('sessao', 'id_sessao', id);
 }
 
-export {getAllSession, getSessionById, getSessionByMovieId, getSessionsByDateRange, checkSessionConflict, createSession, updateSession, deleteSession}
+export {getAllSession, getSessionById, getSessionByMovieId, getSessionsByDateRange, checkSessionConflict, createSession, updateSession, deleteSession, getFilmsWithSessionsInWeek}

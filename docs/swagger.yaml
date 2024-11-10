@@ -2409,6 +2409,38 @@ paths:
         '500':
           $ref: '#/components/responses/500'
 
+  /sessions/this-week:
+    get:
+      summary: Obter filmes com sessões nesta semana
+      tags:
+        - Gerenciar Sessões
+      responses:
+        200:
+          description: Lista de filmes com sessões nesta semana recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indica se a operação foi bem-sucedida
+                    example: true
+                  msg:
+                    type: string
+                    description: Mensagem informando o status da operação
+                    example: 'Filmes com sessões nesta semana'
+                  films:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
   /ticket-price:
     post:
       summary: Criar um novo preço de ingresso

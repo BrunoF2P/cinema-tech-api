@@ -1,4 +1,4 @@
-import {findAll, findByUnique, create, update, deleteById, findByField, checkField} from "./genericRepository.js";
+import {findAll, findByUnique, create, update, deleteById, checkField} from "./genericRepository.js";
 import prisma from "../../prismaClient.js";
 
 async function getAllSession(){
@@ -161,7 +161,8 @@ async function getFilmsWithSessionsInWeek() {
                         }
                     }
                 }
-            }
+            },
+            generos: true,
         }
     });
 
@@ -174,6 +175,7 @@ async function getFilmsWithSessionsInWeek() {
         classificacao_etaria: film.classificacao_etaria,
         poster: film.poster_path,
         nota_imdb: film.nota_imdb,
+        generos: film.generos.map(genero => genero.nome_genero),
         sessoes: film.sessoes.map(sessao => ({
             id_sessao: sessao.id_sessao,
             data_sessao: sessao.data_sessao,
@@ -185,11 +187,51 @@ async function getFilmsWithSessionsInWeek() {
 
 
 async function getSessionByMovieId(id) {
-    return await findByField('sessao', 'id_filme', id,{
-        filme: true,
-        sala: true,
+    const now = new Date(); // Data atual para comparar
+
+    // Buscar as sessões do filme com ID especificado e filtrar as futuras
+    const sessions = await prisma.filme.findUnique({
+        where: { id_filme: id },
+        include: {
+            sessoes: {
+                where: {
+                    data_sessao: {
+                        gte: now // Filtra as sessões que ainda vão ocorrer
+                    }
+                },
+                select: {
+                    id_sessao: true,
+                    data_sessao: true,
+                    sala: {
+                        select: {
+                            nome_sala: true
+                        }
+                    }
+                }
+            },
+            generos: true, // Incluindo os gêneros do filme
+        }
     });
+
+    // Retornar as informações do filme com suas sessões futuras e gêneros
+    return {
+        id: sessions.id_filme,
+        titulo: sessions.titulo,
+        sinopse: sessions.sinopse,
+        data_lancamento: sessions.data_lancamento,
+        duracao: sessions.duracao,
+        classificacao_etaria: sessions.classificacao_etaria,
+        poster: sessions.poster_path,
+        nota_imdb: sessions.nota_imdb,
+        generos: sessions.generos.map(genero => genero.nome_genero), // Adicionando os gêneros
+        sessoes: sessions.sessoes.map(sessao => ({
+            id_sessao: sessao.id_sessao,
+            data_sessao: sessao.data_sessao,
+            sala: sessao.sala.nome_sala
+        }))
+    };
 }
+
 
 async function getSessionsByDateRange(startDate, endDate) {
     return await checkField('sessao',{

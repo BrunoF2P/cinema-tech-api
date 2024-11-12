@@ -1,7 +1,7 @@
 import {
     checkSessionConflict,
     createSession, deleteSession,
-    getAllSession, getFilmsComingThisMonth, getFilmsWithSessionsInWeek,
+    getAllSession, getFilmsComingThisMonth, getFilmsWithFutureSessions, getFilmsWithSessionsInWeek,
     getSessionById,
     getSessionByMovieId, getSessionsByDateRange,
     updateSession
@@ -112,6 +112,20 @@ const sessionController = {
     async getFilmsWithSessionsInWeekController(req, res) {
         try {
             const films = await getFilmsWithSessionsInWeek();
+            res.json({
+                success: true,
+                msg: 'Filmes com sessões nesta semana',
+                films
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, msg: 'Erro ao buscar filmes com sessões' });
+        }
+    },
+
+    async getFilmsWithFutureSessions(req, res) {
+        try {
+            const films = await getFilmsWithFutureSessions();
             res.json({
                 success: true,
                 msg: 'Filmes com sessões nesta semana',

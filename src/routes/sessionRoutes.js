@@ -18,6 +18,7 @@ router.delete('/sessions/:id_sessao', [...adminMiddleware, validateSessionId], s
 
 router.get('/sessions/this-coming-month', sessionController.getFilmsComingThisMonthController);
 router.get('/sessions/this-week', sessionController.getFilmsWithSessionsInWeekController);
+router.get('/sessions/with-future-sessions', sessionController.getFilmsWithFutureSessions);
 
 router.get('/sessions', sessionController.getAllSessionController);
 router.get('/sessions/:id_sessao', validateSessionId, sessionController.getSessionByIdController);

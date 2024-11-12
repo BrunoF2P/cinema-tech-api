@@ -2443,12 +2443,12 @@ paths:
 
   /sessions/this-coming-month:
     get:
-      summary: Obter filmes que serão lançados neste mês
+      summary: Obter filmes futuros que serão lançados neste mês
       tags:
         - Gerenciar Sessões
       responses:
         200:
-          description: Lista de filmes não lançados neste mês com seccoes recuperada com sucesso
+          description: Lista de filmes com sessões neste mes recuperada com sucesso
           content:
             application/json:
               schema:
@@ -2461,7 +2461,7 @@ paths:
                   msg:
                     type: string
                     description: Mensagem informando o status da operação
-                    example: 'Filmes com sessões nesta semana'
+                    example: 'Filmes com sessões neste mês'
                   films:
                     type: array
                     items:
@@ -2472,6 +2472,40 @@ paths:
           $ref: '#/components/responses/401'
         '500':
           $ref: '#/components/responses/500'
+
+
+  /sessions/with-future-sessions:
+    get:
+      summary: Obter filmes em lancamento e com sessões futuras neste mês
+      tags:
+        - Gerenciar Sessões
+      responses:
+        200:
+          description: Lista de filmes com sessões futuras neste mês recuperada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indica se a operação foi bem-sucedida
+                    example: true
+                  msg:
+                    type: string
+                    description: Mensagem informando o status da operação
+                    example: 'Filmes com sessões neste mês'
+                  films:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
 
 
   /ticket-price:

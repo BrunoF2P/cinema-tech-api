@@ -2375,7 +2375,7 @@ paths:
 
   /sessions/date-range:
     get:
-      summary: Obter sessões por filme
+      summary: Obter sessões de filmes por range de data
       tags:
         - Gerenciar Sessões
       parameters:

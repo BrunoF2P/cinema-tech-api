@@ -162,7 +162,16 @@ async function getFilmsWithSessionsInWeek() {
                     }
                 }
             },
-            generos: true,
+            FilmeGenero: {
+                select: {
+                    genero: {
+                        select: {
+                            id_genero: true,
+                            nome_genero: true
+                        }
+                    }
+                }
+            }
         }
     });
 
@@ -175,7 +184,10 @@ async function getFilmsWithSessionsInWeek() {
         classificacao_etaria: film.classificacao_etaria,
         poster: film.poster_path,
         nota_imdb: film.nota_imdb,
-        generos: film.generos.map(genero => genero.nome_genero),
+        generos: film.FilmeGenero.map(fg => ({
+            id_genero: fg.genero.id_genero,
+            nome_genero: fg.genero.nome_genero
+        })),
         sessoes: film.sessoes.map(sessao => ({
             id_sessao: sessao.id_sessao,
             data_sessao: sessao.data_sessao,
@@ -209,7 +221,16 @@ async function getSessionByMovieId(id) {
                     }
                 }
             },
-            generos: true, // Incluindo os gêneros do filme
+            FilmeGenero: {
+                select: {
+                    genero: {
+                        select: {
+                            id_genero: true,
+                            nome_genero: true
+                        }
+                    }
+                }
+            } // Incluindo os gêneros do filme
         }
     });
 
@@ -223,7 +244,10 @@ async function getSessionByMovieId(id) {
         classificacao_etaria: sessions.classificacao_etaria,
         poster: sessions.poster_path,
         nota_imdb: sessions.nota_imdb,
-        generos: sessions.generos.map(genero => genero.nome_genero), // Adicionando os gêneros
+        generos: sessions.FilmeGenero.map(fg => ({
+            id_genero: fg.genero.id_genero,
+            nome_genero: fg.genero.nome_genero
+        })),
         sessoes: sessions.sessoes.map(sessao => ({
             id_sessao: sessao.id_sessao,
             data_sessao: sessao.data_sessao,

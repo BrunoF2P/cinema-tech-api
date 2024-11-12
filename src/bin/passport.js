@@ -1,34 +1,26 @@
 import passport from 'passport';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { jwtConfig } from './jwtConfig.js';
 import prisma from '../../prismaClient.js';
 
-
-const cookieExtractor = function(req) {
-    let token = null;
-    if (req.cookies && req) {
-        token = req.cookies['token'];
-    }
-    return token;
-};
-
+// Usando o cabeçalho Authorization: Bearer <token>
 passport.use(new JwtStrategy({
-    jwtFromRequest: cookieExtractor, // Extrai o JWT do cookie
-    secretOrKey: jwtConfig().secret,
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),  // Extrai o JWT do cabeçalho Authorization
+    secretOrKey: jwtConfig().secret,  // Usando a chave secreta configurada
 }, async (jwtPayload, done) => {
     try {
-        // Busca o usuário no banco de dados
+        // Buscando o usuário na base de dados
         const user = await prisma.usuario.findUnique({
             where: { id_usuario: jwtPayload.userId },
         });
 
         if (user) {
-            return done(null, user);
+            return done(null, user);  // Usuário encontrado
         } else {
-            return done(null, false);
+            return done(null, false);  // Usuário não encontrado
         }
     } catch (err) {
-        return done(err, false);
+        return done(err, false);  // Erro durante a busca do usuário
     }
 }));
 

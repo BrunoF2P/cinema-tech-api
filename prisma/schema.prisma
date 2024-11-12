@@ -18,7 +18,11 @@ model Usuario {
   id_usuario      Int         @id @default(autoincrement())
   nome            String      @db.VarChar(100)
   cpf             String      @unique @db.VarChar(255)
-  email           String      @unique @db.VarChar(100)
+  cpf_hash        String      @unique @db.VarChar(255)
+  iv_cpf          String      @unique @db.VarChar(255)
+  email           String      @unique @db.VarChar(255)
+  email_hash      String      @unique @db.VarChar(255)
+  iv_email        String      @unique @db.VarChar(255)
   data_nascimento DateTime    @db.Date
   cidade          Cidade      @relation(fields: [id_cidade], references: [id_cidade])
   estado          Estado      @relation(fields: [id_estado], references: [id_estado])

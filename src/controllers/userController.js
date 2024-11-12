@@ -70,6 +70,7 @@ async function registerUser(req, res) {
         res.status(201).json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
 
     } catch (err) {
+        console.log(err)
         res.status(500).json({ success: false, msg: 'Falha ao cadastrar o usuário' });
     }
 }

@@ -64,31 +64,33 @@ model Estado {
 }
 
 model Filme {
-  id_filme             Int           @id @default(autoincrement())
+  id_filme             Int      @id @default(autoincrement())
   id_api               Int?
-  titulo               String        @db.VarChar(255)
-  slug                 String        @unique @db.VarChar(100)
-  sinopse              String        @db.Text
-  data_lancamento      DateTime      @db.Date
+  titulo               String   @db.VarChar(255)
+  slug                 String   @unique @db.VarChar(100)
+  sinopse              String   @db.Text
+  data_lancamento      DateTime @db.Date
   duracao              Int
   classificacao_etaria Int
-  poster_path          String        @db.VarChar(255)
-  trailer_url          String        @db.VarChar(255)
-  nota_imdb            Decimal       @db.Decimal(3, 2)
-  generos              Genero[]      @relation("FilmeGeneros")
-  FilmeGenero          FilmeGenero[]
-  sessoes              Sessao[]
+  poster_path          String   @db.VarChar(255)
+  trailer_url          String   @db.VarChar(255)
+  nota_imdb            Decimal  @db.Decimal(3, 2)
 
+  FilmeGenero FilmeGenero[]
+  sessoes     Sessao[]
+
+  @@index([titulo])
   @@map("filmes")
 }
 
 model Genero {
-  id_genero   Int           @id @default(autoincrement())
+  id_genero   Int    @id @default(autoincrement())
   id_api      Int?
-  nome_genero String        @unique @db.VarChar(100)
-  filmes      Filme[]       @relation("FilmeGeneros")
+  nome_genero String @unique @db.VarChar(100)
+
   FilmeGenero FilmeGenero[]
 
+  @@index([nome_genero])
   @@map("generos")
 }
 
@@ -100,7 +102,7 @@ model FilmeGenero {
   genero Genero @relation(fields: [id_genero], references: [id_genero], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([id_filme, id_genero])
-  @@map("filme_genero")
+  @@map("filmes_generos")
 }
 
 model Sala {

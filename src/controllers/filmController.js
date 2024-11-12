@@ -31,8 +31,8 @@ const filmController = {
                     trailer_url,
                     nota_imdb,
                     slug: await generateUniqueSlug(titulo),
-                    generos: {
-                        connect: generos.map(id => ({ id_genero: id }))
+                    FilmeGenero: {
+                        create: generos.map(id => ({ id_genero: id }))
                     }
                 }
 
@@ -41,6 +41,7 @@ const filmController = {
             res.status(201).json({ success: true, msg: 'Filme cadastrado com sucesso', filmData});
 
         } catch (error) {
+            console.log(error);
             res.status(500).json({ success: false, msg: 'Falha ao cadastrar o filme' });
         }
     },
@@ -255,7 +256,7 @@ const filmController = {
     async searchFilmsByGenreController(req, res) {
         const validation = validationResult(req);
         if (!validation.isEmpty()) {
-            return res.status(400).json({ erro: validation.array() });
+            return res.status(400).json({erro: validation.array()});
         }
 
         const genreId = parseInt(req.query.genreId);
@@ -263,15 +264,14 @@ const filmController = {
         const limit = parseInt(req.query.limit) || 10;
 
         if (isNaN(genreId) || page < 1 || limit < 1) {
-            return res.status(400).json({ erro: 'Parâmetros de paginação inválidos ou ID de gênero inválido' });
+            return res.status(400).json({erro: 'Parâmetros de paginação inválidos ou ID de gênero inválido'});
         }
 
         try {
-
-
             const offset = (page - 1) * limit;
 
-            const { films, totalCount } = await searchFilmsByGenre({ genreId, skip: offset, take: limit });
+            // Chamada ajustada
+            const {films, totalCount} = await searchFilmsByGenre(genreId, offset, limit);
 
             res.json({
                 success: true,
@@ -281,9 +281,9 @@ const filmController = {
                 totalPages: Math.ceil(totalCount / limit),
                 currentPage: page,
             });
-
         } catch (error) {
-            res.status(500).json({ success: false, msg: 'Falha ao buscar os filmes' });
+            console.log(error);
+            res.status(500).json({success: false, msg: 'Falha ao buscar os filmes'});
         }
     }
 }

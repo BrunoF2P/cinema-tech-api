@@ -16,12 +16,14 @@ router.post('/sessions', adminMiddleware, validateSession(false), sessionControl
 router.put('/sessions/:id_sessao', [...adminMiddleware, validateSessionId, validateSession(true)], sessionController.updateSessionController);
 router.delete('/sessions/:id_sessao', [...adminMiddleware, validateSessionId], sessionController.deleteSessionController);
 
+router.get('/sessions/this-coming-month', sessionController.getFilmsComingThisMonthController);
 router.get('/sessions/this-week', sessionController.getFilmsWithSessionsInWeekController);
 
 router.get('/sessions', sessionController.getAllSessionController);
 router.get('/sessions/:id_sessao', validateSessionId, sessionController.getSessionByIdController);
 router.get('/sessions/movie/:id_filme', validateSessionMovieId, sessionController.getSessionByMovieIdController);
 router.get('/sessions/date-range', validateSessionDateRange, sessionController.getSessionsByDateRangeController);
+
 
 
 

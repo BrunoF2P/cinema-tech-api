@@ -6,6 +6,7 @@ async function getAllSession(){
         filme: {
             select: {
                 id_filme: true,
+                slug: true,
                 titulo: true,
                 sinopse: true,
                 data_lancamento: true,
@@ -31,6 +32,7 @@ async function getSessionById(id) {
         filme: {
             select: {
                 id_filme: true,
+                slug: true,
                 titulo: true,
                 sinopse: true,
                 data_lancamento: true,
@@ -100,6 +102,7 @@ async function getSessionById(id) {
             filme: {
                 id: session.filme.id_filme,
                 titulo: session.filme.titulo,
+                slug: session.filme.slug,
                 sinopse: session.filme.sinopse,
                 data_lancamento: session.filme.data_lancamento,
                 duracao: session.filme.duracao,
@@ -128,10 +131,11 @@ async function getSessionById(id) {
 
 async function getFilmsWithSessionsInWeek() {
     const startOfWeek = new Date();
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Começo da semana (domingo)
+    startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() === 0 ? 6 : startOfWeek.getDay() - 1)); // Começo da semana (segunda-feira)
 
+    // Cria a data para o domingo da mesma semana
     const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6); // Fim da semana (sábado)
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Fim da semana (domingo)
 
     const filmsWithSessions = await prisma.filme.findMany({
         where: {
@@ -178,6 +182,7 @@ async function getFilmsWithSessionsInWeek() {
     return filmsWithSessions.map(film => ({
         id: film.id_filme,
         titulo: film.titulo,
+        slug: film.slug,
         sinopse: film.sinopse,
         data_lancamento: film.data_lancamento,
         duracao: film.duracao,
@@ -238,6 +243,7 @@ async function getSessionByMovieId(id) {
     return {
         id: sessions.id_filme,
         titulo: sessions.titulo,
+        slug: sessions.slug,
         sinopse: sessions.sinopse,
         data_lancamento: sessions.data_lancamento,
         duracao: sessions.duracao,
@@ -256,6 +262,69 @@ async function getSessionByMovieId(id) {
     };
 }
 
+
+async function getFilmsComingThisMonth() {
+    const currentDate = new Date();
+    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Último dia do mês
+
+    const filmsComingThisMonth = await prisma.filme.findMany({
+        where: {
+            data_lancamento: {
+                gte: currentDate, // Filmes com lançamento futuro
+                lte: endOfMonth // E até o fim do mês
+            }
+        },
+        include: {
+            FilmeGenero: {
+                select: {
+                    genero: {
+                        select: {
+                            id_genero: true,
+                            nome_genero: true
+                        }
+                    }
+                }
+            },
+            sessoes: {
+                where: {
+                    data_sessao: {
+                        gte: currentDate // Apenas sessões futuras
+                    }
+                },
+                select: {
+                    id_sessao: true,
+                    data_sessao: true,
+                    sala: {
+                        select: {
+                            nome_sala: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    return filmsComingThisMonth.map(film => ({
+        id: film.id_filme,
+        titulo: film.titulo,
+        slug: film.slug,
+        sinopse: film.sinopse,
+        data_lancamento: film.data_lancamento,
+        duracao: film.duracao,
+        classificacao_etaria: film.classificacao_etaria,
+        poster: film.poster_path,
+        nota_imdb: film.nota_imdb,
+        generos: film.FilmeGenero.map(fg => ({
+            id_genero: fg.genero.id_genero,
+            nome_genero: fg.genero.nome_genero
+        })),
+        sessoes: film.sessoes.map(sessao => ({
+            id_sessao: sessao.id_sessao,
+            data_sessao: sessao.data_sessao,
+            sala: sessao.sala.nome_sala
+        }))
+    }));
+}
 
 async function getSessionsByDateRange(startDate, endDate) {
     return await checkField('sessao',{
@@ -286,4 +355,4 @@ async function deleteSession(id){
     return await deleteById('sessao', 'id_sessao', id);
 }
 
-export {getAllSession, getSessionById, getSessionByMovieId, getSessionsByDateRange, checkSessionConflict, createSession, updateSession, deleteSession, getFilmsWithSessionsInWeek}
+export {getAllSession, getSessionById, getSessionByMovieId, getSessionsByDateRange, getFilmsComingThisMonth, checkSessionConflict, createSession, updateSession, deleteSession, getFilmsWithSessionsInWeek}

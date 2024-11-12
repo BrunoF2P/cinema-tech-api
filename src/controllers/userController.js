@@ -65,7 +65,8 @@ async function registerUser(req, res) {
             httpOnly: false,
             secure: true,
             sameSite: 'none',
-            maxAge: 24 * 60 * 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000,
+            partitioned: true
         });
         res.status(201).json({ success: true, msg: 'Usuário cadastrado com sucesso', token });
 
@@ -109,7 +110,8 @@ async function loginUser(req, res) {
             httpOnly: false,
             secure: true,
             sameSite: 'none',
-            maxAge: 24 * 60 * 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000,
+            partitioned: true
         });
 
 

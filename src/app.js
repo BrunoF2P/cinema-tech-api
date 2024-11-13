@@ -23,7 +23,7 @@ const swaggerDocument = YAML.load('docs/swagger.yaml');
 swaggerDocument.servers[0].url = `${process.env.SERVER_URL}/v1`;
 
 const corsOptions = {
-    origin: 'http://localhost:5173', // URL do seu frontend local
+    origin: ['http://localhost:5173', 'https://cinema-tech.netlify.app'], // URL do seu frontend local
     credentials: true, // Permite o envio de cookies e outras credenciais
 };
 

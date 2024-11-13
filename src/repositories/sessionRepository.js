@@ -13,6 +13,7 @@ async function getAllSession(){
                 duracao: true,
                 classificacao_etaria: true,
                 poster_path: true,
+                trailer_url: true,
                 nota_imdb: true
             }
         },
@@ -39,6 +40,7 @@ async function getSessionById(id) {
                 duracao: true,
                 classificacao_etaria: true,
                 poster_path: true,
+                trailer_url: true,
                 nota_imdb: true
             }
         },
@@ -108,6 +110,7 @@ async function getSessionById(id) {
                 duracao: session.filme.duracao,
                 classificacao_etaria: session.filme.classificacao_etaria,
                 poster: session.filme.poster_path,
+                trailer_url: film.trailer_url,
                 nota_imdb: session.filme.nota_imdb,
             },
             sala: {
@@ -188,6 +191,7 @@ async function getFilmsWithSessionsInWeek() {
         duracao: film.duracao,
         classificacao_etaria: film.classificacao_etaria,
         poster: film.poster_path,
+        trailer_url: film.trailer_url,
         nota_imdb: film.nota_imdb,
         generos: film.FilmeGenero.map(fg => ({
             id_genero: fg.genero.id_genero,
@@ -249,6 +253,7 @@ async function getSessionByMovieId(id) {
         duracao: sessions.duracao,
         classificacao_etaria: sessions.classificacao_etaria,
         poster: sessions.poster_path,
+        trailer_url: film.trailer_url,
         nota_imdb: sessions.nota_imdb,
         generos: sessions.FilmeGenero.map(fg => ({
             id_genero: fg.genero.id_genero,
@@ -313,6 +318,7 @@ async function getFilmsComingThisMonth() {
         duracao: film.duracao,
         classificacao_etaria: film.classificacao_etaria,
         poster: film.poster_path,
+        trailer_url: film.trailer_url,
         nota_imdb: film.nota_imdb,
         generos: film.FilmeGenero.map(fg => ({
             id_genero: fg.genero.id_genero,
@@ -382,6 +388,7 @@ async function getFilmsWithFutureSessions() {
         duracao: film.duracao,
         classificacao_etaria: film.classificacao_etaria,
         poster: film.poster_path,
+        trailer_url: film.trailer_url,
         nota_imdb: film.nota_imdb,
         generos: film.FilmeGenero.map(fg => ({
             id_genero: fg.genero.id_genero,

@@ -43,13 +43,9 @@ function validationFilmOP(isOptional) {
         check('classificacao_etaria')
             .optional(isOptional).notEmpty().withMessage('Classificação etária é obrigatória'),
 
-        check('poster_path')
-            .optional(isOptional)
-            .isURL().withMessage('O caminho do poster deve ser uma URL válida'),
-
         check('trailer_url')
             .optional(isOptional)
-            .isURL().withMessage('A URL do trailer deve ser um link valido válida'),
+            .isString().withMessage('A URL do trailer deve ser uma parte do link do YouTube trailer'),
 
         check('nota_imdb')
             .optional(isOptional)

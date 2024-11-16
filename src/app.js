@@ -1,6 +1,9 @@
+import 'newrelic';
+
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import routers from './routes/index.js';
@@ -11,9 +14,6 @@ import url from 'url';
 import { apiReference } from '@scalar/express-api-reference';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
-// Configurando variaveis de ambiente
-dotenv.config();
 
 // Criando uma instância do aplicativo Express
 const app = express();

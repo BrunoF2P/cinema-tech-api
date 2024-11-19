@@ -47,7 +47,6 @@ const bookingController = {
                 id_usuario: req.user.id_usuario,
                 id_sessao,
                 data_reserva: new Date(),
-                data_expiracao: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expiração em 24 horas
                 status: 'pendente',
                 total,
                 Cadeiras: {
@@ -63,6 +62,7 @@ const bookingController = {
 
             res.status(201).json({ success: true, msg: 'Reservas criadas com sucesso.', bookings });
         } catch (error) {
+            console.log(error);
             res.status(500).json({ success: false, msg: 'Falha ao criar as reservas' });
         }
     },

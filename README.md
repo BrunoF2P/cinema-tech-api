@@ -45,12 +45,16 @@
    DATABASE_URL=postgres://usuario:senha@localhost:porta/banco_dados
    SECRET=your_key
    MODE_SYS=dev or prod
+   SECRET_HASH_KEY=deve ter um comprimento de 256 bits
+   SERVER_URL=http://localhost:3000
+   GEMINI_API_KEY=chave-gemini
+   NEW_RELIC_APP_NAME=nome do projeto
+   NEW_RELIC_LICENSE_KEY=chave-new-relic
+### 🔧 Instalação do Postgresql
 
-### 🔧 Instalação do MySQL
+Para rodar o projeto localmente, você precisará de um servidor Postgresql. Existem duas opções principais:
 
-Para rodar o projeto localmente, você precisará de um servidor MySQL. Existem duas opções principais:
-
-- **Instalar MySQL localmente**:
+- **Instalar Postgresql localmente**:
    - Se você quiser rodar o banco de dados Postgresql localmente, faça o download e a instalação a partir do site oficial: [Postgresql](https://www.postgresql.org/download/).
    - Após a instalação, configure o Postgresql para rodar no seu computador, crie um banco de dados e ajuste a variável `DATABASE_URL` no arquivo `.env` conforme necessário.
 
@@ -109,5 +113,5 @@ Para mais detalhes sobre a licença, consulte o arquivo [LICENSE](LICENSE.txt) n
 [Node.js]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white
 [Node-url]: https://nodejs.org/
 
-[Postgresql]: https://img.shields.io/badge/Postgress-4479A1?style=for-the-badge&logo=mysql&logoColor=white
+[Postgresql]: https://img.shields.io/badge/Postgress-4479A1?style=for-the-badge&logo=postgresql&logoColor=white
 [Postgresql-url]: https://www.postgresql.org/

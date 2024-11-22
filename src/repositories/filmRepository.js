@@ -1,4 +1,5 @@
 import prisma from '../../prismaClient.js';
+import axios from 'axios'
 
 async function generateUniqueSlug(titulo) {
     const baseSlug = generateSlug(titulo);
@@ -328,5 +329,112 @@ async function deleteFilm(id) {
 }
 
 
+const getGenresFromApi = async () => {
+  try {
+    const response = await axios.get(process.env.SERVER_URL + "/v1/genres");
+    return response.data.genres;
+  } catch (error) {
+    console.error("Erro ao buscar gêneros:", error.message);
+    throw new Error("Erro ao buscar os gêneros.");
+  }
+};
 
-export {createFilm, getAllFilms, getFilmById, searchFilmsByTitle, searchFilmsByAgeRating, deleteFilm, updateFilm, searchFilmsByGenre, generateUniqueSlug}
+const mapGenresToIds = (genresList, genres) => {
+  return genres
+    .map((genreName) => {
+      if (genreName && typeof genreName === "string") {
+        const genre = genresList.find((g) => g.nome_genero === genreName);
+        return genre ? genre.id_genero : null;
+      } else {
+        return null; 
+      }
+    })
+    .filter((id) => id !== null);
+};
+
+async function getMovieInfoAI (movieName) {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error(
+      "Chave da API Gemini não configurada. Verifique o arquivo .env."
+    );
+  }
+
+  try {
+    // Chamada para a API Gemini para buscar as informações do filme
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
+      {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `Forneça informações detalhadas sobre o filme "${movieName}" no formato:
+                
+                {
+                  "titulo": "Exemplo de Filme",
+                  "sinopse": "Uma breve descrição do filme.",
+                  "data_lancamento": "2024-09-01",
+                  "duracao": 120,
+                  "classificacao_etaria": 12,
+                  "nota_imdb": 8.7,
+                  "generos": [
+                      "Ação",
+                      "Comédia"
+                  ]
+                }`,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Extraindo a resposta da IA
+    const movieContent = response.data.candidates[0].content.parts[0].text;
+
+    // Formata a resposta para um json
+    const movieJsonString = movieContent.replace(/```/g, "").trim();
+
+    // Converter a string para um objeto JSON
+    const movieData = JSON.parse(movieJsonString);
+
+    // Obter a lista de gêneros da sua API
+    const genresList = await getGenresFromApi();
+
+    // Mapear os gêneros do filme para os IDs
+    const genreIds = mapGenresToIds(genresList, movieData.generos);
+
+    // Atualizar o objeto de dados do filme com os IDs dos gêneros
+    movieData.generos = genreIds;
+
+    // Retornar o objeto modelado com os IDs dos gêneros
+    return movieData;
+  } catch (error) {
+    console.error(
+      "Erro na chamada à API Gemini:",
+      error.response?.data || error.message
+    );
+    throw new Error("Erro ao consultar a API Gemini");
+  }
+};
+
+
+export {
+  createFilm,
+  getAllFilms,
+  getFilmById,
+  searchFilmsByTitle,
+  searchFilmsByAgeRating,
+  deleteFilm,
+  updateFilm,
+  searchFilmsByGenre,
+  generateUniqueSlug,
+  getMovieInfoAI};

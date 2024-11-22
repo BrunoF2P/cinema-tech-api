@@ -2,6 +2,7 @@ import {
     createFilm, deleteFilm, generateUniqueSlug,
     getAllFilms,
     getFilmById,
+    getMovieInfoAI,
     searchFilmsByAgeRating, searchFilmsByGenre,
     searchFilmsByTitle, updateFilm
 } from '../repositories/filmRepository.js';
@@ -285,7 +286,23 @@ const filmController = {
             console.log(error);
             res.status(500).json({success: false, msg: 'Falha ao buscar os filmes'});
         }
+    },
+
+    async searchFilmeByAI(req, res) {
+        const { movieName } = req.body;
+
+        if (!movieName) {
+            return res.status(400).json({ error: 'Por favor, forneça o nome do filme.' });
+        }
+
+        try {
+            const movieInfo = await getMovieInfoAI(movieName);
+            res.json(movieInfo);
+        } catch (error) {
+            res.status(500).json({ error: 'Não foi possível buscar as informações do filme.' });
+        }
     }
+
 }
 
 export default filmController;

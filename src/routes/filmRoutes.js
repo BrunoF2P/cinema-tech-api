@@ -9,6 +9,7 @@ const adminMiddleware = [authenticateJwt, authorizeAdmin];
 
 
 router.post('/films', adminMiddleware, validationFilmOP(false), validateFilm, filmController.createFilmController);
+router.post("/films-ai", adminMiddleware, filmController.searchFilmeByAI);
 router.put('/films/:id', [...adminMiddleware, validateFilmId, validationFilmOP(true)], filmController.updateFilmController);
 router.delete('/films/:id', [...adminMiddleware, validateFilmId], filmController.deleteFilmController);
 

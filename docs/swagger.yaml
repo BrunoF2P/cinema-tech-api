@@ -1011,6 +1011,36 @@ paths:
         '500':
           description: Erro interno do servidor
       parameters: []
+  '/films-ai':
+    post:
+      tags:
+        - Gestão de filmes
+      summary: Gerar informação de um filme usando IA
+      security:
+        - JWT: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                movieName:
+                  type: string
+                  example: "Deadpool"
+                  description: "Nome do filme que deseja pesquisar"
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          description: Erro na validação dos dados
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          description: Erro interno do servidor
+      parameters: []
   '/films/{id}':
     get:
       tags:

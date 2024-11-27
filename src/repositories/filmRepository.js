@@ -164,7 +164,13 @@ async function searchFilmsByTitle(title) {
 async function updateFilm(id, updateData) {
     const updatedFilm = await prisma.filme.update({
         where: { id_filme: id },
-        data: updateData,
+        data: {
+            ...updateData,
+            // Certifique-se de que os gêneros estão sendo atualizados corretamente
+            FilmeGenero: updateData.generos ? {
+                set: updateData.generos.map(id => ({ id_genero: id }))
+            } : undefined,  // Apenas adiciona a atualização se os gêneros forem passados
+        },
         include: {
             FilmeGenero: {
                 select: {
@@ -179,6 +185,7 @@ async function updateFilm(id, updateData) {
         },
     });
 
+    // Mapeia os gêneros para o formato desejado
     const generos = updatedFilm.FilmeGenero.map(fg => ({
         id_genero: fg.genero.id_genero,
         nome_genero: fg.genero.nome_genero,
@@ -199,6 +206,7 @@ async function updateFilm(id, updateData) {
         generos: generos,
     };
 }
+
 
 async function searchFilmsByGenre(genreId, skip = 0, take = 10) {
     const films = await prisma.filme.findMany({

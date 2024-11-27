@@ -169,7 +169,7 @@ const filmController = {
         }
     },
 
-    async  updateFilmController(req, res) {
+    async updateFilmController(req, res) {
         const validation = validationResult(req);
         if (!validation.isEmpty()) {
             return res.status(400).json({ erro: validation.array() });
@@ -180,22 +180,20 @@ const filmController = {
         const idExist = await getFilmById(parseInt(id));
 
         if (!idExist) {
-            return res.status(404).json({success: false, msg: 'Filme não encontrado'
-            });}
+            return res.status(404).json({ success: false, msg: 'Filme não encontrado' });
+        }
 
         const { titulo, sinopse, data_lancamento, duracao, classificacao_etaria, poster_path, trailer_url, nota_imdb, generos } = req.body;
 
         let formattedDate = null;
 
         if (data_lancamento) {
-
             const parsedDate = new Date(data_lancamento);
             if (isNaN(parsedDate.getTime())) {
-                return res.status(400).json({ error: 'Formato de data invalido' });
+                return res.status(400).json({ error: 'Formato de data inválido' });
             }
             formattedDate = parsedDate.toISOString();
         }
-
 
         try {
             const updatedFilm = await updateFilm(parseInt(id, 10), {
@@ -208,7 +206,7 @@ const filmController = {
                 ...(trailer_url && { trailer_url }),
                 ...(nota_imdb && { nota_imdb }),
                 ...(generos && {
-                    generos: {
+                    FilmeGenero: {
                         set: generos.map(id => ({ id_genero: id }))
                     }
                 }),
@@ -222,7 +220,7 @@ const filmController = {
             });
 
         } catch (error) {
-            console.log(error)
+            console.log(error);
             res.status(500).json({ success: false, msg: 'Falha ao atualizar o filme' });
         }
     },

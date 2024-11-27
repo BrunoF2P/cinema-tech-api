@@ -162,14 +162,15 @@ async function searchFilmsByTitle(title) {
 }
 
 async function updateFilm(id, updateData) {
+    // Certifique-se de que `updateData.generos` seja um array, mesmo que seja passado como um único valor.
     const updatedFilm = await prisma.filme.update({
         where: { id_filme: id },
         data: {
             ...updateData,
-            // Certifique-se de que os gêneros estão sendo atualizados corretamente
-            FilmeGenero: updateData.generos ? {
+            // Se generos estiver presente, assegure-se de que seja um array e use a estrutura correta
+            FilmeGenero: updateData.generos && Array.isArray(updateData.generos) ? {
                 set: updateData.generos.map(id => ({ id_genero: id }))
-            } : undefined,  // Apenas adiciona a atualização se os gêneros forem passados
+            } : undefined,
         },
         include: {
             FilmeGenero: {
@@ -206,6 +207,7 @@ async function updateFilm(id, updateData) {
         generos: generos,
     };
 }
+
 
 
 async function searchFilmsByGenre(genreId, skip = 0, take = 10) {
